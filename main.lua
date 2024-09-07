@@ -28,7 +28,7 @@ elseif (usage == 2) then
     -- [2] LISTAR
     printFile(filmFile)
 elseif (usage == 3) then 
-    -- [1] ALTERAR
+    -- [3] ALTERAR
     local killName = getAtributte("nome do objeto a ser alterado")
 
     local filme = {}
@@ -41,5 +41,9 @@ elseif (usage == 3) then
 
     alterFile(filmFile, filme, killName, "filme")
 elseif (usage == 4) then
+    -- [4] DELETAR
+    local killName = getAtributte("nome do objeto a ser deletado")
+
+    deleteInFile(filmFile, killName)
 else
 end
