@@ -14,7 +14,14 @@ local screen1 = {
         receita = "",
         orcamento = ""
     },
-    fields = {"Nome", "Data de Lançamento", "Produtora", "Diretor", "Receita", "Orçamento"},
+    fields = {
+        {display = "Nome", key = "nome"},
+        {display = "Data de Lançamento", key = "dataLancamento"},
+        {display = "Produtora", key = "produtora"},
+        {display = "Diretor", key = "diretor"},
+        {display = "Receita", key = "receita"},
+        {display = "Orçamento", key = "orcamento"}
+    },
     fieldPositions = {},  -- Armazenar as posições dos campos
     currentField = nil,  -- Nenhum campo ativo inicialmente
     completed = false,
@@ -32,13 +39,12 @@ function screen1.load()
 end
 
 function screen1.draw()
-    -- Exibir campos de texto e capturar entrada do usuário
     for i, field in ipairs(screen1.fields) do
         love.graphics.setColor(1, 1, 1)
-        love.graphics.printf(field .. ": ", 50, 50 + (i * 30), 100, "left")
+        love.graphics.printf(field.display .. ": ", 50, 50 + (i * 30), 100, "left")
         love.graphics.rectangle("line", 200, 50 + (i * 30), 200, 25)
 
-        local value = screen1.inputs[field:lower()] or ""
+        local value = screen1.inputs[field.key] or ""
 
         if screen1.currentField == i then
             love.graphics.printf(screen1.inputField.text, 210, 55 + (i * 30), 180, "left")
@@ -81,39 +87,32 @@ function screen1.textinput(t)
 end
 
 function screen1.mousepressed(x, y, button)
-    if button == 1 then  -- Verificar se o botão esquerdo do mouse foi clicado
+    if button == 1 then
         local clickedInsideField = false
 
-        -- Verificar se o clique foi em algum campo de texto
         for i, pos in ipairs(screen1.fieldPositions) do
             if x > pos.x and x < pos.x + pos.width and y > pos.y and y < pos.y + pos.height then
-                -- Salvar o texto do campo anterior, se existir
                 if screen1.currentField then
-                    screen1.inputs[screen1.fields[screen1.currentField]:lower()] = screen1.inputField.text
+                    screen1.inputs[screen1.fields[screen1.currentField].key] = screen1.inputField.text
                 end
 
-                -- Se o clique estiver dentro das coordenadas do campo, ativá-lo
                 screen1.currentField = i
-                screen1.inputField.text = screen1.inputs[screen1.fields[i]:lower()] or ""
+                screen1.inputField.text = screen1.inputs[screen1.fields[i].key] or ""
                 clickedInsideField = true
                 break
             end
         end
 
-        -- Se o clique não estiver em nenhum campo, desativar a edição
         if not clickedInsideField then
-            -- Salvar o texto do campo anterior, se existir
             if screen1.currentField then
-                screen1.inputs[screen1.fields[screen1.currentField]:lower()] = screen1.inputField.text
+                screen1.inputs[screen1.fields[screen1.currentField].key] = screen1.inputField.text
             end
             screen1.currentField = nil
             screen1.inputField.text = ""
         end
 
-        -- Verificar se o botão "Confirmar" foi clicado
         if x > screen1.confirmButton.x and x < screen1.confirmButton.x + screen1.confirmButton.width and 
            y > screen1.confirmButton.y and y < screen1.confirmButton.y + screen1.confirmButton.height then
-            -- Salvar o filme quando o botão for clicado
             local storagedFilm = newFilm({
                 nome = screen1.inputs.nome,
                 dataLancamento = screen1.inputs.dataLancamento,
@@ -127,6 +126,7 @@ function screen1.mousepressed(x, y, button)
         end
     end
 end
+
 
 -- Returning
 return screen1
