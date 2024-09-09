@@ -17,6 +17,18 @@ function printFile(filename)
     file:close()
 end
 
+-- Função para ler arquivo
+function readFile(file)
+    local f = io.open(file, "r")
+    if f then
+        local content = f:read("*a")
+        f:close()
+        return content
+    else
+        return "Arquivo não encontrado!"
+    end
+end
+
 function addInFile(filename, string)
     local file = io.open(filename, "r")
     if not file then

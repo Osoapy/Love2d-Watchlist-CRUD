@@ -1,0 +1,10 @@
+{["nome"] = "Novo Filme",["diretor"] = "Diretor Exemplo",["dataLancamento"] = "01/01/2024",["produtora"] = "Produtora Exemplo",["orcamento"] = 500000,["receita"] = 1000000}
+{["nome"] = "Novo Filme",["diretor"] = "Diretor Exemplo",["dataLancamento"] = "01/01/2024",["produtora"] = "Produtora Exemplo",["orcamento"] = 500000,["receita"] = 1000000}
+{["nome"] = "Novo Filme",["diretor"] = "Diretor Exemplo",["dataLancamento"] = "01/01/2024",["produtora"] = "Produtora Exemplo",["orcamento"] = 500000,["receita"] = 1000000}
+{["nome"] = "Novo Filme",["diretor"] = "Diretor Exemplo",["dataLancamento"] = "01/01/2024",["produtora"] = "Produtora Exemplo",["orcamento"] = 500000,["receita"] = 1000000}
+{["nome"] = "Novo Filme",["diretor"] = "Diretor Exemplo",["dataLancamento"] = "01/01/2024",["produtora"] = "Produtora Exemplo",["orcamento"] = 500000,["receita"] = 1000000}
+{["nome"] = "Novo Filme",["diretor"] = "Diretor Exemplo",["dataLancamento"] = "01/01/2024",["produtora"] = "Produtora Exemplo",["orcamento"] = 500000,["receita"] = 1000000}
+{["nome"] = "Novo Filme",["diretor"] = "Diretor Exemplo",["dataLancamento"] = "01/01/2024",["produtora"] = "Produtora Exemplo",["orcamento"] = 500000,["receita"] = 1000000}
+{["nome"] = "Novo Filme",["diretor"] = "Diretor Exemplo",["dataLancamento"] = "01/01/2024",["produtora"] = "Produtora Exemplo",["orcamento"] = 500000,["receita"] = 1000000}
+{["dataLancamento"] = "01/01/2024",["produtora"] = "Produtora Exemplo",["orcamento"] = 500000,["receita"] = 1000000,["nome"] = "Novo Filme",["diretor"] = "Diretor Exemplo"}
+{["dataLancamento"] = "01/01/2024",["produtora"] = "Produtora Exemplo",["orcamento"] = 500000,["receita"] = 1000000,["nome"] = "Novo Filme",["diretor"] = "Diretor Exemplo"}
