@@ -4,17 +4,15 @@ require("functions.stringFunctions")
 function newFilm(object)
     -- Constructor
     local self = {
-        orcamento = orcamento or 0,
-        receita = receita or 0,
-        type = "filme"
+        type = "filme",
+
+        -- Adding object parameters
+        orcamento = object.orcamento or "0",
+        receita = object.receita or "0"
     }
 
     -- Using object
     object = object or {}
-
-    -- Adding object parameters
-    self.orcamento = object.orcamento or self.orcamento
-    self.receita = object.receita or self.receita
 
     -- Setters
     local setOrcamento = function(orcamento)

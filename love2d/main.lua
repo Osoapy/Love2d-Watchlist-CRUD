@@ -24,10 +24,21 @@ function love.draw()
         screens[currentScreen].draw()
     end
 end
-
 function love.mousepressed(x, y, button, istouch, presses)
     if screens[currentScreen] and screens[currentScreen].mousepressed then
         screens[currentScreen].mousepressed(x, y, button, istouch, presses)
+    end
+end
+
+function love.keypressed(key)
+    if screens[currentScreen] and screens[currentScreen].keypressed then
+        screens[currentScreen].keypressed(key)
+    end
+end
+
+function love.textinput(t)
+    if screens[currentScreen] and screens[currentScreen].textinput then
+        screens[currentScreen].textinput(t)
     end
 end
 

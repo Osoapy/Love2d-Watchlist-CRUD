@@ -1,28 +1,15 @@
 function newBackClass(object)
     -- Constructor
     local self = {
-        nome = nome or "",
-        diretor = diretor or "",
-        dataLancamento = dataLancamento or "",
-        produtora = produtora or ""
+        -- Adding object parameters
+        nome = object.nome or "",
+        diretor = object.diretor or "",
+        dataLancamento = object.dataLancamento or "",
+        produtora = object.produtora or ""
     }
 
     -- Using object
     object = object or {}
-
-    -- Adding object parameters
-    if object.nome then 
-        self.nome = object.nome
-    end
-    if object.diretor then
-        self.diretor = object.diretor
-    end
-    if object.dataLancamento then
-        self.dataLancamento = object.dataLancamento
-    end
-    if object.produtora then
-        self.produtora = object.produtora
-    end
 
     -- Setters
     local setNome = function(nome)
