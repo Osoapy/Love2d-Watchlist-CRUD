@@ -2,6 +2,12 @@ local screens = {}
 local currentScreen = "menu"
 
 function love.load()
+    love.window.setMode(800, 600, {
+        resizable = true,   -- Permite redimensionar a janela
+        minwidth = 800,     -- Largura mínima
+        minheight = 600     -- Altura mínima
+    })
+
     -- Carregar as telas
     screens.menu = require "screens.menu"
     screens.screen1 = require "screens.screen1"
