@@ -13,7 +13,6 @@ function love.load()
     screens.screen1 = require "screens.screen1"
     screens.screen2 = require "screens.screen2"
     screens.screen3 = require "screens.screen3"
-    screens.screen4 = require "screens.screen4"
     
     -- Inicializar a tela principal
     screens.menu.load()
