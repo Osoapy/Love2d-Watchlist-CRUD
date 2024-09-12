@@ -1,20 +1,26 @@
 local screens = {}
 local currentScreen = "menu"
+local myFont
 
 function love.load()
+    -- Window config
     love.window.setMode(800, 600, {
-        resizable = true,   -- Permite redimensionar a janela
-        minwidth = 800,     -- Largura mínima
-        minheight = 600     -- Altura mínima
+        resizable = true,
+        minwidth = 800,   
+        minheight = 600    
     })
 
-    -- Carregar as telas
+    -- Load the font
+    myFont = love.graphics.newFont("fonts/zenKaku.ttf", 26)
+    love.graphics.setFont(myFont)
+
+    -- Load screens
     screens.menu = require "screens.menu"
     screens.screen1 = require "screens.screen1"
     screens.screen2 = require "screens.screen2"
     screens.screen3 = require "screens.screen3"
     
-    -- Inicializar a tela principal
+    -- Initialize menu
     screens.menu.load()
 end
 
