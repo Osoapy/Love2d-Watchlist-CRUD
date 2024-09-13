@@ -65,9 +65,9 @@ function menu.draw()
     -- Desativar recorte
     love.graphics.setScissor()
 
-    -- Div para a mensagem
+    -- Div para a mensagem (ajustada para 25% da altura da tela)
     local messageDivWidth = screenWidth * 0.3
-    local messageDivHeight = screenHeight * 0.4
+    local messageDivHeight = screenHeight * 0.25
     local messageDivX, messageDivY = leftDivX, leftDivY1 + leftDivHeight + screenHeight * 0.05
     love.graphics.setColor(1, 0.9, 0.76, 0.21)
     love.graphics.rectangle("fill", messageDivX, messageDivY, messageDivWidth, messageDivHeight)
@@ -94,33 +94,41 @@ function menu.draw()
         local value = inputFields[field.key] or ""
         love.graphics.printf(value, attributesDivX + 125, attributesDivY + 35 + (i - 1) * 40, attributesDivWidth - 140, "left")
     end
-end
 
-function menu.keypressed(key)
-    if currentField then
-        if key == "return" then
-            -- Finalizar edição do campo atual
-            currentField = nil
-        elseif key == "backspace" then
-            -- Apagar o último caractere
-            if #inputFields[currentField] > 0 then
-                inputFields[currentField] = inputFields[currentField]:sub(1, -2)
-            end
-        end
-    end
-end
+    -- Desenhar os botões de "Salvar" e "Excluir"
+    local buttonWidth = attributesDivWidth * 0.4  -- 40% da largura da div
+    local buttonHeight = 40
+    local buttonY = attributesDivY + attributesDivHeight - buttonHeight - 20
+    local saveButtonX = attributesDivX + 10
+    local deleteButtonX = attributesDivX + attributesDivWidth - buttonWidth - 10
 
-function menu.textinput(t)
-    if currentField then
-        inputFields[currentField] = inputFields[currentField] .. t
-    end
+    -- Botão Salvar
+    love.graphics.setColor(0, 0.5, 0)
+    love.graphics.rectangle("fill", saveButtonX, buttonY, buttonWidth, buttonHeight)
+    love.graphics.setColor(1, 1, 1)
+    love.graphics.printf("Salvar", saveButtonX, buttonY + 10, buttonWidth, "center")
+
+    -- Botão Excluir
+    love.graphics.setColor(0.5, 0, 0)
+    love.graphics.rectangle("fill", deleteButtonX, buttonY, buttonWidth, buttonHeight)
+    love.graphics.setColor(1, 1, 1)
+    love.graphics.printf("Excluir", deleteButtonX, buttonY + 10, buttonWidth, "center")
 end
 
 function menu.mousepressed(x, y, button)
     if button == 1 then
-        local attributesDivWidth = love.graphics.getWidth() * 0.35
-        local attributesDivX = love.graphics.getWidth() - attributesDivWidth - love.graphics.getWidth() * 0.05
+        -- Verificar se o clique foi nos botões de salvar ou excluir
+        local screenWidth = love.graphics.getWidth()
+        local attributesDivWidth = screenWidth * 0.35
+        local attributesDivHeight = love.graphics.getHeight() * 0.8
+        local attributesDivX = screenWidth - attributesDivWidth - screenWidth * 0.05
         local attributesDivY = love.graphics.getHeight() * 0.1
+
+        local buttonWidth = attributesDivWidth * 0.4
+        local buttonHeight = 40
+        local buttonY = attributesDivY + attributesDivHeight - buttonHeight - 20
+        local saveButtonX = attributesDivX + 10
+        local deleteButtonX = attributesDivX + attributesDivWidth - buttonWidth - 10
 
         -- Verificar se o clique foi em algum campo de texto da div de atributos
         for i, field in ipairs(fields) do
@@ -138,6 +146,33 @@ function menu.mousepressed(x, y, button)
         if not currentField then
             currentField = nil
         end
+
+        -- Clique no botão Salvar
+        if x > saveButtonX and x < saveButtonX + buttonWidth and y > buttonY and y < buttonY + buttonHeight then
+            filmFile = "archives/filme.txt"
+            local savingFilm = {}
+            for _, field in ipairs(fields) do
+                savingFilm[field.key] = inputFields[field.key]
+            end
+
+            -- Agora você pode adicionar esse novo filme à lista de filmes ou salvar em arquivo
+            table.insert(allFilms, savingFilm)
+            local actualFilm = newFilm(savingFilm)
+
+            addInFile(filmFile, actualFilm.getSerialized())
+        end
+
+        -- Clique no botão Excluir
+        if x > deleteButtonX and x < deleteButtonX + buttonWidth and y > buttonY and y < buttonY + buttonHeight then
+            print("Excluir clicado!")
+            -- Ação de excluir
+        end
+    end
+end
+
+function menu.textinput(t)
+    if currentField then
+        inputFields[currentField] = inputFields[currentField] .. t
     end
 end
 

@@ -4,6 +4,7 @@ local myFont
 
 -- Importing
 require("functions.dao")
+require("classes.filme")
 
 function love.load()
     -- Window config
