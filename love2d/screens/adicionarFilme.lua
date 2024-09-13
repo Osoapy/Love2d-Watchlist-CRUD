@@ -1,11 +1,16 @@
 local menu = {}
 
--- Variáveis de controle de rolagem
+-- Configurações de layout
 local scrollY = 0
 local filmHeight = 30
 local visibleFilmCount
+local inputFields = {}
+local currentField = nil
+local allFilms = {}
+local filmFile = "archives/filme.txt"
+local background
 
--- Campos de texto editáveis
+-- Campos editáveis
 local fields = {
     {display = "Nome", key = "nome"},
     {display = "Data de Lançamento", key = "dataLancamento"},
@@ -14,9 +19,6 @@ local fields = {
     {display = "Receita", key = "receita"},
     {display = "Orçamento", key = "orcamento"}
 }
-
-local inputFields = {}  -- Para armazenar os textos dos campos
-local currentField = nil
 
 function menu.load()
     -- Carregar a imagem do background
@@ -32,87 +34,23 @@ function menu.load()
     end
 
     -- Recebe todos os filmes a serem listados
-    filmFile = "archives/filme.txt"
     allFilms = returnAllObjects(filmFile)
     visibleFilmCount = math.floor(love.graphics.getHeight() * 0.5 / filmHeight)
 end
 
 function menu.draw()
-    -- Configurar cor e desenhar o background
-    love.graphics.setColor(1, 1, 1)
     local screenWidth, screenHeight = love.graphics.getWidth(), love.graphics.getHeight()
-    love.graphics.draw(background, 0, 0, 0, screenWidth / background:getWidth(), screenHeight / background:getHeight())
 
-    -- Div para a lista de filmes
-    local leftDivWidth = screenWidth * 0.3
-    local leftDivHeight = screenHeight * 0.5
-    local leftDivX, leftDivY1 = screenWidth * 0.05, screenHeight * 0.1
-    love.graphics.setColor(1, 0.9, 0.76, 0.21)
-    love.graphics.rectangle("fill", leftDivX, leftDivY1, leftDivWidth, leftDivHeight)
+    -- Configurar cor e desenhar o background
+    drawBackground(background)
 
-    -- Ativar recorte para a área da div de filmes
-    love.graphics.setScissor(leftDivX, leftDivY1, leftDivWidth, leftDivHeight)
+    -- Desenhar o resto do layout
+    drawFilmList(allFilms, scrollY, filmHeight, visibleFilmCount, screenWidth, screenHeight)
+    drawMessage(screenWidth, screenHeight)
+    drawAttributes(fields, inputFields, screenWidth, screenHeight)
 
-    -- Desenhar a lista de filmes com rolagem
-    love.graphics.setColor(0, 0, 0)
-    local filmStartIndex = math.floor(scrollY / filmHeight) + 1
-    local filmEndIndex = math.min(filmStartIndex + visibleFilmCount - 1, #allFilms)
-    for i = filmStartIndex, filmEndIndex do
-        local film = allFilms[i]
-        love.graphics.printf(film.nome, leftDivX + 10, leftDivY1 + (i - filmStartIndex) * filmHeight - scrollY, leftDivWidth - 20, "left")
-    end
-
-    -- Desativar recorte
-    love.graphics.setScissor()
-
-    -- Div para a mensagem (ajustada para 25% da altura da tela)
-    local messageDivWidth = screenWidth * 0.3
-    local messageDivHeight = screenHeight * 0.25
-    local messageDivX, messageDivY = leftDivX, leftDivY1 + leftDivHeight + screenHeight * 0.05
-    love.graphics.setColor(1, 0.9, 0.76, 0.21)
-    love.graphics.rectangle("fill", messageDivX, messageDivY, messageDivWidth, messageDivHeight)
-
-    -- Exibir título da mensagem
-    love.graphics.setColor(1, 1, 1)
-    love.graphics.setFont(love.graphics.newFont(30))
-    love.graphics.printf("YOU ARE WHAT YOU ARE WATCHING", messageDivX, messageDivY + 10, messageDivWidth, "center")
-
-    -- Div para os atributos
-    local attributesDivWidth = screenWidth * 0.35
-    local attributesDivHeight = screenHeight * 0.8
-    local attributesDivX = screenWidth - attributesDivWidth - screenWidth * 0.05
-    local attributesDivY = screenHeight * 0.1
-    love.graphics.setColor(1, 0.9, 0.76, 0.21)
-    love.graphics.rectangle("fill", attributesDivX, attributesDivY, attributesDivWidth, attributesDivHeight)
-
-    -- Desenhar os campos de texto na div de atributos
-    love.graphics.setColor(1, 1, 1)
-    love.graphics.setFont(love.graphics.newFont(20))
-    for i, field in ipairs(fields) do
-        love.graphics.printf(field.display .. ": ", attributesDivX + 10, attributesDivY + 30 + (i - 1) * 40, attributesDivWidth - 20, "left")
-        love.graphics.rectangle("line", attributesDivX + 120, attributesDivY + 30 + (i - 1) * 40, attributesDivWidth - 130, 30)
-        local value = inputFields[field.key] or ""
-        love.graphics.printf(value, attributesDivX + 125, attributesDivY + 35 + (i - 1) * 40, attributesDivWidth - 140, "left")
-    end
-
-    -- Desenhar os botões de "Salvar" e "Excluir"
-    local buttonWidth = attributesDivWidth * 0.4  -- 40% da largura da div
-    local buttonHeight = 40
-    local buttonY = attributesDivY + attributesDivHeight - buttonHeight - 20
-    local saveButtonX = attributesDivX + 10
-    local deleteButtonX = attributesDivX + attributesDivWidth - buttonWidth - 10
-
-    -- Botão Salvar
-    love.graphics.setColor(0, 0.5, 0)
-    love.graphics.rectangle("fill", saveButtonX, buttonY, buttonWidth, buttonHeight)
-    love.graphics.setColor(1, 1, 1)
-    love.graphics.printf("Salvar", saveButtonX, buttonY + 10, buttonWidth, "center")
-
-    -- Botão Excluir
-    love.graphics.setColor(0.5, 0, 0)
-    love.graphics.rectangle("fill", deleteButtonX, buttonY, buttonWidth, buttonHeight)
-    love.graphics.setColor(1, 1, 1)
-    love.graphics.printf("Excluir", deleteButtonX, buttonY + 10, buttonWidth, "center")
+    -- Botões
+    drawButtons(screenWidth, screenHeight)
 end
 
 function menu.mousepressed(x, y, button)
@@ -142,11 +80,6 @@ function menu.mousepressed(x, y, button)
             end
         end
 
-        -- Caso o clique não tenha sido em nenhum campo, finalizar a edição
-        if not currentField then
-            currentField = nil
-        end
-
         -- Clique no botão Salvar
         if x > saveButtonX and x < saveButtonX + buttonWidth and y > buttonY and y < buttonY + buttonHeight then
             filmFile = "archives/filme.txt"
@@ -159,7 +92,10 @@ function menu.mousepressed(x, y, button)
             table.insert(allFilms, savingFilm)
             local actualFilm = newFilm(savingFilm)
 
+            -- Adiciona o filme ao arquivo
             addInFile(filmFile, actualFilm.getSerialized())
+
+            -- Os campos continuam editáveis, então não limpar os campos após salvar
         end
 
         -- Clique no botão Excluir
@@ -173,6 +109,17 @@ end
 function menu.textinput(t)
     if currentField then
         inputFields[currentField] = inputFields[currentField] .. t
+    end
+end
+
+function menu.keypressed(key)
+    if currentField then
+        if key == "backspace" then  -- Verifica se a tecla pressionada é backspace
+            -- Apenas remove o último caractere se houver algum texto
+            if #inputFields[currentField] > 0 then
+                inputFields[currentField] = inputFields[currentField]:sub(1, -2)
+            end
+        end
     end
 end
 

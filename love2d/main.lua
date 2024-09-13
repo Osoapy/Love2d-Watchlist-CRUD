@@ -5,6 +5,7 @@ local myFont
 -- Importing
 require("functions.dao")
 require("classes.filme")
+require("screenFunctions.layout")
 
 function love.load()
     -- Window config
@@ -21,6 +22,7 @@ function love.load()
     -- Load screens
     screens.menu = require "screens.menu"
     screens.adicionarFilme = require "screens.adicionarFilme"
+    screens.editarFilme = require "screens.editarFilme"
     screens.screen2 = require "screens.screen2"
     screens.screen3 = require "screens.screen3"
     
