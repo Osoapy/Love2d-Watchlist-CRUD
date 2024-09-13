@@ -15,7 +15,7 @@ function menu.load()
 
     -- Inicializa os botões
     menu.buttons = {
-        {label = "Filme", screen = "screen1"},
+        {label = "Filme", screen = "adicionarFilme"},
         {label = "Série", screen = "screen2"},
         {label = "Reality show", screen = "screen3"}
     }

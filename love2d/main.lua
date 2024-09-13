@@ -2,6 +2,9 @@ local screens = {}
 local currentScreen = "menu"
 local myFont
 
+-- Importing
+require("functions.dao")
+
 function love.load()
     -- Window config
     love.window.setMode(800, 600, {
@@ -16,7 +19,7 @@ function love.load()
 
     -- Load screens
     screens.menu = require "screens.menu"
-    screens.screen1 = require "screens.screen1"
+    screens.adicionarFilme = require "screens.adicionarFilme"
     screens.screen2 = require "screens.screen2"
     screens.screen3 = require "screens.screen3"
     
