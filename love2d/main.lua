@@ -53,6 +53,12 @@ function love.textinput(t)
     end
 end
 
+function love.mousemoved(x, y, dx, dy, istouch)
+    if screens[currentScreen] and screens[currentScreen].mousemoved then
+        screens[currentScreen].mousemoved(x, y, dx, dy, istouch)
+    end
+end
+
 -- Função para mudar de tela
 function changeScreen(screenName)
     if screens[screenName] then

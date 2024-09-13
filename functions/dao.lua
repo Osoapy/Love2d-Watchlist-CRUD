@@ -123,3 +123,24 @@ function deleteInFile(filename, nome)
     end
     file:close()
 end
+
+function returnAllObjects(filename)
+    -- Getting the newLine
+    local newLine
+
+    local file = io.open(filename, "r")
+    if not file then
+        print("Erro ao abrir o arquivo.")
+        return
+    end
+
+    local lines = {}
+    local allObjects = {}
+    for line in file:lines() do
+        local deserializedTable = parse(line)
+        table.insert(allObjects, deserializedTable)
+    end
+    file:close()
+
+    return allObjects
+end
