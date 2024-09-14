@@ -67,15 +67,8 @@ function menu.draw()
     love.graphics.setScissor()
 
     -- Segunda div
-    local secondDivHeight = screenHeight * 0.3
-    local spacing = screenHeight * 0.05
-    local divY2 = divY1 + divHeight + spacing
-    love.graphics.setColor(1, 0.9, 0.76, 0.21)
-    love.graphics.rectangle("fill", divX, divY2, divWidth, secondDivHeight)
-    love.graphics.setColor(1, 1, 1)
-    love.graphics.setFont(love.graphics.newFont(30))
-    love.graphics.printf("YOU ARE WHAT YOU ARE WATCHING", divX, divY2 + secondDivHeight / 2 - 15, divWidth, "center")
-
+    drawMessage(screenWidth, screenHeight)
+    
     -- Div direita
     local rightDivWidth = screenWidth * 0.35
     local rightDivHeight = screenHeight * 0.8

@@ -11,6 +11,20 @@ local filmFile = "archives/filme.txt"
 local background
 local screenWidth, screenHeight = love.graphics.getWidth(), love.graphics.getHeight()
 
+local divWidth, divHeight = screenWidth * 0.45, screenHeight * 0.5
+local divX, divY1 = screenWidth * 0.05, screenHeight * 0.1
+local messageDivX, messageDivY = screenWidth * 0.05, screenHeight * 0.65
+local messageDivWidth, messageDivHeight = screenWidth * 0.3, screenHeight * 0.25
+local secondDivHeight = screenHeight * 0.3
+local spacing = screenHeight * 0.05
+local divY2 = divY1 + divHeight + spacing
+
+local isDraggingScrollbar = false
+local scrollbarY = 0
+local scrollbarHeight
+local scrollbarWidth = 20
+local totalHeight
+
 -- Campos editáveis
 local fields = {
     {display = "Nome", key = "nome"},
@@ -37,6 +51,10 @@ function menu.load()
     -- Recebe todos os filmes a serem listados
     allFilms = returnAllObjects(filmFile)
     visibleFilmCount = math.floor(love.graphics.getHeight() * 0.5 / filmHeight)
+
+    -- Calcula a altura da barra de rolagem
+    scrollbarHeight = math.max(visibleFilmCount / #allFilms * screenHeight * 0.5, 20)
+    totalHeight = #allFilms * filmHeight
 end
 
 function menu.draw()
@@ -44,7 +62,7 @@ function menu.draw()
     drawBackground(background)
 
     -- Desenhar o resto do layout
-    drawFilmList(allFilms, scrollY, filmHeight, visibleFilmCount, screenWidth, screenHeight)
+    drawFilmList(allFilms, scrollY, filmHeight, visibleFilmCount, screenWidth, screenHeight, scrollbarWidth, scrollbarHeight)
     drawMessage(screenWidth, screenHeight)
     drawAttributes(fields, inputFields, screenWidth, screenHeight)
 
@@ -79,6 +97,21 @@ function menu.mousepressed(x, y, button)
             end
         end
 
+        -- Clique num filme
+        if not isDraggingScrollbar and x >= divX and x <= divX + divWidth and y >= divY1 and y <= divY1 + divHeight then
+            local clickedIndex = math.floor((y - divY1 + scrollY) / filmHeight) + 1
+
+            -- Verifica se o índice está dentro da lista de filmes
+            if clickedIndex >= 1 and clickedIndex <= #allFilms then
+                local selectedFilm = allFilms[clickedIndex]
+
+                -- Preenche os campos de texto com os valores do filme selecionado
+                for _, field in ipairs(fields) do
+                    inputFields[field.key] = selectedFilm[field.key] or ""
+                end
+            end
+        end
+
         -- Clique no botão Salvar
         if x > saveButtonX and x < saveButtonX + buttonWidth and y > buttonY and y < buttonY + buttonHeight then
             filmFile = "archives/filme.txt"
@@ -103,14 +136,15 @@ function menu.mousepressed(x, y, button)
             -- Ação de excluir
         end
 
-        -- Verificar se o clique foi na área de rolagem
-        local divX = screenWidth * 0.05
-        local divY1 = screenHeight * 0.1
-        local divHeight = screenHeight * 0.5
-        if x >= divX and x <= divX + screenWidth * 0.45 and y >= divY1 and y <= divY1 + divHeight then
-            local clickY = y - divY1
-            scrollY = clickY - (divHeight / 2) + (filmHeight / 2)
-            scrollY = math.max(0, math.min(scrollY, #allFilms * filmHeight - divHeight))
+        -- Verifica se o clique foi na barra de rolagem
+        local leftDivX, leftDivY = screenWidth * 0.05, screenHeight * 0.1
+        local leftDivWidth, leftDivHeight = screenWidth * 0.3, screenHeight * 0.5
+        local scrollbarX = leftDivX + leftDivWidth + 10
+
+        if x >= scrollbarX and x <= scrollbarX + scrollbarWidth and y >= scrollbarY and y <= scrollbarY + scrollbarHeight then
+            isDraggingScrollbar = true
+        else
+            isDraggingScrollbar = false
         end
     end
 end
@@ -132,12 +166,22 @@ function menu.keypressed(key)
     end
 end
 
+-- Função de controle do movimento do scroll
 function menu.mousemoved(x, y, dx, dy)
     local screenHeight = love.graphics.getHeight()
     local divHeight = screenHeight * 0.5
     if love.mouse.isDown(1) then
-        scrollY = math.max(0, math.min(scrollY - dy, #allFilms * filmHeight - divHeight))
+        -- Limitar o scroll entre 0 e a altura total menos a altura da div
+        scrollY = math.max(0, math.min(scrollY - dy, totalHeight - divHeight))
     end
+end
+    
+-- Função para detectar a rolagem do mouse
+function menu.wheelmoved(x, y)
+    local screenHeight = love.graphics.getHeight()
+    local divHeight = screenHeight * 0.5
+    -- Limitar o scroll para não ir além do último filme
+    scrollY = math.max(0, math.min(scrollY - y * 20, totalHeight - divHeight))
 end
 
 return menu

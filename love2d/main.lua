@@ -41,6 +41,7 @@ function love.draw()
         screens[currentScreen].draw()
     end
 end
+
 function love.mousepressed(x, y, button, istouch, presses)
     if screens[currentScreen] and screens[currentScreen].mousepressed then
         screens[currentScreen].mousepressed(x, y, button, istouch, presses)
