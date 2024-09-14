@@ -4,14 +4,20 @@ function drawBackground(background)
     love.graphics.draw(background, 0, 0, 0, screenWidth / background:getWidth(), screenHeight / background:getHeight())
 end
 
-function drawFilmList(films, scrollY, filmHeight, visibleFilmCount, screenWidth, screenHeight, scrollbarWidth, scrollbarHeight)
-    local divWidth = screenWidth * 0.45  -- Usar a mesma largura da div na função drawMessage
+function drawFilmList(films, scrollY, filmHeight, scrollbarWidth)
+    local screenWidth, screenHeight = love.graphics.getWidth(), love.graphics.getHeight()
+    local divWidth = screenWidth * 0.45
     local leftDivX, leftDivY = screenWidth * 0.05, screenHeight * 0.1
-    local leftDivWidth, leftDivHeight = divWidth, screenHeight * 0.5  -- Atualizar a largura para ser igual à segunda div
+    local leftDivHeight = screenHeight * 0.5
+
+    -- Recalcular o número de filmes visíveis com base na altura da tela
+    local visibleFilmCount = math.floor(leftDivHeight / filmHeight)
 
     -- Desenha a área da lista de filmes
     love.graphics.setColor(1, 0.9, 0.76, 0.21)
     love.graphics.rectangle("fill", leftDivX, leftDivY, divWidth, leftDivHeight)
+    
+    -- Definir a área de clipping (ajusta conforme a tela aumenta)
     love.graphics.setScissor(leftDivX, leftDivY, divWidth, leftDivHeight)
 
     -- Ajustar o início e fim da lista com base no scroll
@@ -24,17 +30,20 @@ function drawFilmList(films, scrollY, filmHeight, visibleFilmCount, screenWidth,
         love.graphics.printf(film.nome, leftDivX + 10, leftDivY + (i - filmStartIndex) * filmHeight - (scrollY % filmHeight), divWidth - 30, "left")
     end
 
+    -- Remover o scissor após desenhar
     love.graphics.setScissor()
 
-    -- Desenhar a barra de rolagem
-    local scrollbarX = leftDivX + leftDivWidth + 10
-    local scrollbarHeight = (leftDivHeight / (#films * filmHeight)) * leftDivHeight
+    -- Recalcular e desenhar a barra de rolagem
+    local scrollbarHeight = math.max((leftDivHeight / (#films * filmHeight)) * leftDivHeight, 20)
+    local scrollbarX = leftDivX + divWidth + 10
     local scrollbarY = leftDivY + (scrollY / (#films * filmHeight)) * leftDivHeight
+
     love.graphics.setColor(0.6, 0.6, 0.6)
     love.graphics.rectangle("fill", scrollbarX, scrollbarY, scrollbarWidth, scrollbarHeight)
 end
 
-function drawMessage(screenWidth, screenHeight)
+function drawMessage()
+    local screenWidth, screenHeight = love.graphics.getWidth(), love.graphics.getHeight()
     local divWidth, divHeight = screenWidth * 0.45, screenHeight * 0.5
     local divX, divY1 = screenWidth * 0.05, screenHeight * 0.1
     local messageDivX, messageDivY = screenWidth * 0.05, screenHeight * 0.65
@@ -45,29 +54,34 @@ function drawMessage(screenWidth, screenHeight)
     love.graphics.setColor(1, 0.9, 0.76, 0.21)
     love.graphics.rectangle("fill", divX, divY2, divWidth, secondDivHeight)
     love.graphics.setColor(1, 1, 1)
-    love.graphics.setFont(love.graphics.newFont(30))
     love.graphics.printf("YOU ARE WHAT YOU ARE WATCHING", divX, divY2 + secondDivHeight / 2 - 15, divWidth, "center")
 end
 
-function drawAttributes(fields, inputFields, screenWidth, screenHeight)
+function drawAttributes(fields, inputFields)
+    local screenWidth, screenHeight = love.graphics.getWidth(), love.graphics.getHeight()
     local attributesDivX = screenWidth * 0.6
     local attributesDivY = screenHeight * 0.1
     local attributesDivWidth = screenWidth * 0.35
     local attributesDivHeight = screenHeight * 0.8
     love.graphics.setColor(1, 0.9, 0.76, 0.21)
     love.graphics.rectangle("fill", attributesDivX, attributesDivY, attributesDivWidth, attributesDivHeight)
-    
-    love.graphics.setColor(1, 1, 1)
-    love.graphics.setFont(love.graphics.newFont(20))
+
     for i, field in ipairs(fields) do
+        love.graphics.setColor(1, 1, 1)
         love.graphics.printf(field.display .. ": ", attributesDivX + 10, attributesDivY + 30 + (i - 1) * 40, attributesDivWidth - 20, "left")
-        love.graphics.rectangle("line", attributesDivX + 120, attributesDivY + 30 + (i - 1) * 40, attributesDivWidth - 130, 30)
+
+        love.graphics.setColor(1, 0.9, 0.76, 0.21)
+        love.graphics.rectangle("line", attributesDivX + 120, attributesDivY + 40 + (i - 1) * 40, attributesDivWidth - 130, 30)
         local value = inputFields[field.key] or ""
-        love.graphics.printf(value, attributesDivX + 125, attributesDivY + 35 + (i - 1) * 40, attributesDivWidth - 140, "left")
+
+        love.graphics.setColor(1, 1, 1)
+        love.graphics.printf(value, attributesDivX + 125, attributesDivY + 30 + (i - 1) * 40, attributesDivWidth - 140, "left")
     end
 end
 
-function drawButtons(screenWidth, screenHeight)
+function drawButtons(selectedFilmIndex)
+    local screenWidth, screenHeight = love.graphics.getWidth(), love.graphics.getHeight()
+
     local attributesDivX = screenWidth * 0.6
     local attributesDivY = screenHeight * 0.1
     local attributesDivWidth = screenWidth * 0.35
@@ -77,15 +91,29 @@ function drawButtons(screenWidth, screenHeight)
     local buttonY = attributesDivY + attributesDivHeight - buttonHeight - 20
     local saveButtonX, deleteButtonX = attributesDivX + 10, attributesDivX + attributesDivWidth - buttonWidth - 10
 
-    -- Botão Salvar
-    love.graphics.setColor(0, 0.5, 0)
-    love.graphics.rectangle("fill", saveButtonX, buttonY, buttonWidth, buttonHeight)
-    love.graphics.setColor(1, 1, 1)
-    love.graphics.printf("Salvar", saveButtonX, buttonY + 10, buttonWidth, "center")
+    if selectedFilmIndex then
+        -- Botão Excluir
+        love.graphics.setColor(0.5, 0, 0)
+        love.graphics.rectangle("fill", saveButtonX, buttonY, buttonWidth, buttonHeight)
+        love.graphics.setColor(1, 1, 1)
+        love.graphics.printf("Excluir", saveButtonX, buttonY + 10, buttonWidth, "center")
 
-    -- Botão Excluir
-    love.graphics.setColor(0.5, 0, 0)
-    love.graphics.rectangle("fill", deleteButtonX, buttonY, buttonWidth, buttonHeight)
-    love.graphics.setColor(1, 1, 1)
-    love.graphics.printf("Excluir", deleteButtonX, buttonY + 10, buttonWidth, "center")
+        -- Botão Alterar
+        love.graphics.setColor(0, 0.5, 0)
+        love.graphics.rectangle("fill", deleteButtonX, buttonY, buttonWidth, buttonHeight)
+        love.graphics.setColor(1, 1, 1)
+        love.graphics.printf("Alterar", deleteButtonX, buttonY + 10, buttonWidth, "center")
+    else
+        -- Botão Limpar
+        love.graphics.setColor(0.5, 0, 0)
+        love.graphics.rectangle("fill", saveButtonX, buttonY, buttonWidth, buttonHeight)
+        love.graphics.setColor(1, 1, 1)
+        love.graphics.printf("Limpar", saveButtonX, buttonY + 10, buttonWidth, "center")
+
+        -- Botão Salvar
+        love.graphics.setColor(0, 0.5, 0)
+        love.graphics.rectangle("fill", deleteButtonX, buttonY, buttonWidth, buttonHeight)
+        love.graphics.setColor(1, 1, 1)
+        love.graphics.printf("Salvar", deleteButtonX, buttonY + 10, buttonWidth, "center")
+    end
 end

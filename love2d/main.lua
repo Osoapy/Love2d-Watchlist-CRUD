@@ -1,6 +1,6 @@
 local screens = {}
 local currentScreen = "menu"
-local myFont
+myFont = nil
 
 -- Importing
 require("functions.dao")
@@ -15,14 +15,13 @@ function love.load()
         minheight = 600    
     })
 
-    -- Load the font
+    -- Load the font 
     myFont = love.graphics.newFont("fonts/zenKaku.ttf", 26)
     love.graphics.setFont(myFont)
 
     -- Load screens
     screens.menu = require "screens.menu"
     screens.adicionarFilme = require "screens.adicionarFilme"
-    screens.editarFilme = require "screens.editarFilme"
     screens.screen2 = require "screens.screen2"
     screens.screen3 = require "screens.screen3"
     

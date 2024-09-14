@@ -24,6 +24,10 @@ local scrollbarY = 0
 local scrollbarHeight
 local scrollbarWidth = 20
 local totalHeight
+local clickedIndex
+
+-- Variável para armazenar o índice do filme selecionado
+local selectedFilmIndex = nil
 
 -- Campos editáveis
 local fields = {
@@ -58,16 +62,28 @@ function menu.load()
 end
 
 function menu.draw()
+    -- Recalcular as dimensões da tela
+    screenWidth, screenHeight = love.graphics.getWidth(), love.graphics.getHeight()
+
+    -- Recalcular as dimensões das divs
+    divWidth, divHeight = screenWidth * 0.45, screenHeight * 0.5
+    divX, divY1 = screenWidth * 0.05, screenHeight * 0.1
+    messageDivX, messageDivY = screenWidth * 0.05, screenHeight * 0.65
+    messageDivWidth, messageDivHeight = screenWidth * 0.3, screenHeight * 0.25
+    secondDivHeight = screenHeight * 0.3
+    spacing = screenHeight * 0.05
+    divY2 = divY1 + divHeight + spacing
+
     -- Configurar cor e desenhar o background
     drawBackground(background)
 
     -- Desenhar o resto do layout
-    drawFilmList(allFilms, scrollY, filmHeight, visibleFilmCount, screenWidth, screenHeight, scrollbarWidth, scrollbarHeight)
-    drawMessage(screenWidth, screenHeight)
-    drawAttributes(fields, inputFields, screenWidth, screenHeight)
+    drawFilmList(allFilms, scrollY, filmHeight, visibleFilmCount, scrollbarWidth, scrollbarHeight)
+    drawMessage()
+    drawAttributes(fields, inputFields)
 
     -- Botões
-    drawButtons(screenWidth, screenHeight)
+    drawButtons(selectedFilmIndex)
 end
 
 function menu.mousepressed(x, y, button)
@@ -99,10 +115,11 @@ function menu.mousepressed(x, y, button)
 
         -- Clique num filme
         if not isDraggingScrollbar and x >= divX and x <= divX + divWidth and y >= divY1 and y <= divY1 + divHeight then
-            local clickedIndex = math.floor((y - divY1 + scrollY) / filmHeight) + 1
+            clickedIndex = math.floor((y - divY1 + scrollY) / filmHeight) + 1
 
             -- Verifica se o índice está dentro da lista de filmes
             if clickedIndex >= 1 and clickedIndex <= #allFilms then
+                selectedFilmIndex = clickedIndex
                 local selectedFilm = allFilms[clickedIndex]
 
                 -- Preenche os campos de texto com os valores do filme selecionado
@@ -112,28 +129,58 @@ function menu.mousepressed(x, y, button)
             end
         end
 
-        -- Clique no botão Salvar
-        if x > saveButtonX and x < saveButtonX + buttonWidth and y > buttonY and y < buttonY + buttonHeight then
-            filmFile = "archives/filme.txt"
-            local savingFilm = {}
-            for _, field in ipairs(fields) do
-                savingFilm[field.key] = inputFields[field.key]
+        if not selectedFilmIndex then
+            -- Clique no botão Salvar
+            if x > deleteButtonX and x < deleteButtonX + buttonWidth and y > buttonY and y < buttonY + buttonHeight then
+                local savingFilm = {}
+                for _, field in ipairs(fields) do
+                    savingFilm[field.key] = inputFields[field.key]
+                end
+
+                -- Agora você pode adicionar esse novo filme à lista de filmes ou salvar em arquivo
+                table.insert(allFilms, savingFilm)
+                local actualFilm = newFilm(savingFilm)
+
+                -- Adiciona o filme ao arquivo
+                addInFile(filmFile, actualFilm.getSerialized())
+
+                -- Os campos continuam editáveis, então não limpar os campos após salvar
             end
 
-            -- Agora você pode adicionar esse novo filme à lista de filmes ou salvar em arquivo
-            table.insert(allFilms, savingFilm)
-            local actualFilm = newFilm(savingFilm)
+            -- Clique no botão Limpar
+            if x > saveButtonX and x < saveButtonX + buttonWidth and y > buttonY and y < buttonY + buttonHeight then
+                for _, field in ipairs(fields) do
+                    inputFields[field.key] = ""
+                end
+            end
+        else
+            -- Clique no botão Alterar
+            if x > deleteButtonX and x < deleteButtonX + buttonWidth and y > buttonY and y < buttonY + buttonHeight then
+                local savingFilm = {}
 
-            -- Adiciona o filme ao arquivo
-            addInFile(filmFile, actualFilm.getSerialized())
+                for _, field in ipairs(fields) do
+                    savingFilm[field.key] = inputFields[field.key]
+                end
 
-            -- Os campos continuam editáveis, então não limpar os campos após salvar
-        end
+                alterFile(filmFile, savingFilm, allFilms[clickedIndex].nome, "filme")
 
-        -- Clique no botão Excluir
-        if x > deleteButtonX and x < deleteButtonX + buttonWidth and y > buttonY and y < buttonY + buttonHeight then
-            print("Excluir clicado!")
-            -- Ação de excluir
+                for _, field in ipairs(fields) do
+                    inputFields[field.key] = ""
+                end
+
+                selectedFilmIndex = nil
+            end
+
+            -- Clique no botão Excluir
+            if x > saveButtonX and x < saveButtonX + buttonWidth and y > buttonY and y < buttonY + buttonHeight then
+                deleteInFile(filmFile, inputFields["nome"])
+
+                for _, field in ipairs(fields) do
+                    inputFields[field.key] = ""
+                end
+
+                selectedFilmIndex = nil
+            end
         end
 
         -- Verifica se o clique foi na barra de rolagem
@@ -159,8 +206,10 @@ function menu.keypressed(key)
     if currentField then
         if key == "backspace" then  -- Verifica se a tecla pressionada é backspace
             -- Apenas remove o último caractere se houver algum texto
-            if #inputFields[currentField] > 0 then
-                inputFields[currentField] = inputFields[currentField]:sub(1, -2)
+            if inputFields then
+                if #inputFields[currentField] > 0 then
+                    inputFields[currentField] = inputFields[currentField]:sub(1, -2)
+                end
             end
         end
     end
