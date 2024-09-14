@@ -39,7 +39,9 @@ local fields = {
     {display = "Orçamento", key = "orcamento"}
 }
 
-function menu.load()
+function menu.load(wasCalled)
+    wasCalled = wasCalled or nil
+
     -- Carregar a imagem do background
     background = love.graphics.newImage("assets/background.png")
     assert(background, "Erro ao carregar a imagem do background!")
@@ -59,6 +61,16 @@ function menu.load()
     -- Calcula a altura da barra de rolagem
     scrollbarHeight = math.max(visibleFilmCount / #allFilms * screenHeight * 0.5, 20)
     totalHeight = #allFilms * filmHeight
+
+    if wasCalled then
+        local selectedFilm = allFilms[wasCalled]
+        selectedFilmIndex = wasCalled
+
+        -- Preenche os campos de texto com os valores do filme selecionado
+        for _, field in ipairs(fields) do
+            inputFields[field.key] = selectedFilm[field.key] or ""
+        end
+    end
 end
 
 function menu.draw()

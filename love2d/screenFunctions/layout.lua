@@ -57,7 +57,7 @@ function drawMessage()
     love.graphics.printf("YOU ARE WHAT YOU ARE WATCHING", divX, divY2 + secondDivHeight / 2 - 15, divWidth, "center")
 end
 
-function drawAttributes(fields, inputFields)
+function drawAttributes(fields, inputFields, drawHalf)
     local screenWidth, screenHeight = love.graphics.getWidth(), love.graphics.getHeight()
     local attributesDivX = screenWidth * 0.6
     local attributesDivY = screenHeight * 0.1
@@ -66,16 +66,20 @@ function drawAttributes(fields, inputFields)
     love.graphics.setColor(1, 0.9, 0.76, 0.21)
     love.graphics.rectangle("fill", attributesDivX, attributesDivY, attributesDivWidth, attributesDivHeight)
 
-    for i, field in ipairs(fields) do
-        love.graphics.setColor(1, 1, 1)
-        love.graphics.printf(field.display .. ": ", attributesDivX + 10, attributesDivY + 30 + (i - 1) * 40, attributesDivWidth - 20, "left")
+    drawHalf = drawHalf or nil
 
-        love.graphics.setColor(1, 0.9, 0.76, 0.21)
-        love.graphics.rectangle("line", attributesDivX + 120, attributesDivY + 40 + (i - 1) * 40, attributesDivWidth - 130, 30)
-        local value = inputFields[field.key] or ""
+    if(not drawHalf) then
+        for i, field in ipairs(fields) do
+            love.graphics.setColor(1, 1, 1)
+            love.graphics.printf(field.display .. ": ", attributesDivX + 10, attributesDivY + 30 + (i - 1) * 40, attributesDivWidth - 20, "left")
 
-        love.graphics.setColor(1, 1, 1)
-        love.graphics.printf(value, attributesDivX + 125, attributesDivY + 30 + (i - 1) * 40, attributesDivWidth - 140, "left")
+            love.graphics.setColor(1, 0.9, 0.76, 0.21)
+            love.graphics.rectangle("line", attributesDivX + 120, attributesDivY + 40 + (i - 1) * 40, attributesDivWidth - 130, 30)
+            local value = inputFields[field.key] or ""
+
+            love.graphics.setColor(1, 1, 1)
+            love.graphics.printf(value, attributesDivX + 125, attributesDivY + 30 + (i - 1) * 40, attributesDivWidth - 140, "left")
+        end
     end
 end
 

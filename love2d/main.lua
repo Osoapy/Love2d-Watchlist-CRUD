@@ -7,14 +7,14 @@ require("functions.dao")
 require("classes.filme")
 require("screenFunctions.layout")
 
-function love.load()
-    -- Window config
-    love.window.setMode(800, 600, {
-        resizable = true,
-        minwidth = 800,   
-        minheight = 600    
-    })
+-- Window config
+love.window.setMode(800, 600, {
+    resizable = true,
+    minwidth = 800,   
+    minheight = 600    
+})
 
+function love.load()
     -- Load the font 
     myFont = love.graphics.newFont("fonts/zenKaku.ttf", 26)
     love.graphics.setFont(myFont)
@@ -78,9 +78,17 @@ function love.wheelmoved(x, y)
 end
 
 -- Função para mudar de tela
-function changeScreen(screenName)
-    if screens[screenName] then
-        currentScreen = screenName
-        screens[currentScreen].load()
+function changeScreen(screenName, addin)
+    addin = addin or nil
+    if (not addin) then
+        if screens[screenName] then
+            currentScreen = screenName
+            screens[currentScreen].load()
+        end
+    else
+        if screens[screenName] then
+            currentScreen = screenName
+            screens[currentScreen].load(addin)
+        end
     end
 end
