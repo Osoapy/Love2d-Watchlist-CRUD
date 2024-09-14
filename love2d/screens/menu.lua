@@ -4,6 +4,15 @@ local menu = {}
 local scrollY = 0
 local filmHeight = 30
 local visibleFilmCount
+local inputFields = {}
+local currentField = nil
+local allFilms = {}
+local filmFile = "archives/filme.txt"
+local background
+local screenWidth, screenHeight = love.graphics.getWidth(), love.graphics.getHeight()
+local scrollVelocity = 0 -- Para a inércia
+local scrollResistance = 0.95 -- Resistência para desacelerar a inércia
+local totalHeight
 
 function menu.load()
     -- Carregar a imagem do background
@@ -23,14 +32,13 @@ function menu.load()
     -- Recebe todos os filmes a serem listados
     filmFile = "archives/filme.txt"
     allFilms = returnAllObjects(filmFile)
+    totalHeight = #allFilms * filmHeight
     visibleFilmCount = math.floor(love.graphics.getHeight() * 0.5 / filmHeight)
 end
 
 function menu.draw()
     -- Configurar cor e desenhar o background
-    love.graphics.setColor(1, 1, 1)
-    local screenWidth, screenHeight = love.graphics.getWidth(), love.graphics.getHeight()
-    love.graphics.draw(background, 0, 0, 0, screenWidth / background:getWidth(), screenHeight / background:getHeight())
+    drawBackground(background)
 
     -- Definir e desenhar a primeira div
     local divWidth, divHeight = screenWidth * 0.45, screenHeight * 0.5
@@ -38,19 +46,24 @@ function menu.draw()
     love.graphics.setColor(1, 0.9, 0.76, 0.21)
     love.graphics.rectangle("fill", divX, divY1, divWidth, divHeight)
 
-    -- Ativar recorte para a área da div de filmes
+    -- Div de filmes com rolagem
+    local divWidth, divHeight = screenWidth * 0.45, screenHeight * 0.5
+    local divX, divY1 = screenWidth * 0.05, screenHeight * 0.1
+    love.graphics.setColor(1, 0.9, 0.76, 0.21)
+    love.graphics.rectangle("fill", divX, divY1, divWidth, divHeight)
+
     love.graphics.setScissor(divX, divY1, divWidth, divHeight)
 
-    -- Desenhar a lista de filmes com rolagem
     love.graphics.setColor(0, 0, 0)
     local filmStartIndex = math.floor(scrollY / filmHeight) + 1
     local filmEndIndex = math.min(filmStartIndex + visibleFilmCount - 1, #allFilms)
+
+    -- Desenhar a lista de filmes
     for i = filmStartIndex, filmEndIndex do
         local film = allFilms[i]
         love.graphics.printf(film.nome, divX + 10, divY1 + (i - filmStartIndex) * filmHeight - scrollY, divWidth - 20, "left")
     end
 
-    -- Desativar recorte
     love.graphics.setScissor()
 
     -- Segunda div
@@ -112,12 +125,36 @@ function menu.mousepressed(x, y, button)
     end
 end
 
+-- Inércia da rolagem
+function menu.update(dt)
+    local screenHeight = love.graphics.getHeight()
+    local divHeight = screenHeight * 0.5
+
+    -- Aplicar inércia se a rolagem ainda estiver em movimento
+    if math.abs(scrollVelocity) > 0.1 then
+        scrollY = math.max(0, math.min(scrollY + scrollVelocity, #allFilms * filmHeight - divHeight))
+        scrollVelocity = scrollVelocity * scrollResistance -- Diminuir a velocidade gradativamente
+    else
+        scrollVelocity = 0 -- Parar completamente se a velocidade for muito baixa
+    end
+end
+
+-- Função de controle do movimento do scroll
 function menu.mousemoved(x, y, dx, dy)
     local screenHeight = love.graphics.getHeight()
     local divHeight = screenHeight * 0.5
     if love.mouse.isDown(1) then
-        scrollY = math.max(0, math.min(scrollY - dy, #allFilms * filmHeight - divHeight))
+        -- Limitar o scroll entre 0 e a altura total menos a altura da div
+        scrollY = math.max(0, math.min(scrollY - dy, totalHeight - divHeight))
     end
+end
+    
+-- Função para detectar a rolagem do mouse
+function menu.wheelmoved(x, y)
+    local screenHeight = love.graphics.getHeight()
+    local divHeight = screenHeight * 0.5
+    -- Limitar o scroll para não ir além do último filme
+    scrollY = math.max(0, math.min(scrollY - y * 20, totalHeight - divHeight))
 end
 
 return menu

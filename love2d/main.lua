@@ -65,6 +65,18 @@ function love.mousemoved(x, y, dx, dy, istouch)
     end
 end
 
+function love.update(dt)
+    if screens[currentScreen] and screens[currentScreen].update then
+        screens[currentScreen].update(dt)
+    end
+end
+
+function love.wheelmoved(x, y)
+    if screens[currentScreen] and screens[currentScreen].wheelmoved then
+        screens[currentScreen].wheelmoved(x, y)
+    end
+end
+
 -- Função para mudar de tela
 function changeScreen(screenName)
     if screens[screenName] then

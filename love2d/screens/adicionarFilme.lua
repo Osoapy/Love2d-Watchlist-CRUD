@@ -9,6 +9,7 @@ local currentField = nil
 local allFilms = {}
 local filmFile = "archives/filme.txt"
 local background
+local screenWidth, screenHeight = love.graphics.getWidth(), love.graphics.getHeight()
 
 -- Campos editáveis
 local fields = {
@@ -39,8 +40,6 @@ function menu.load()
 end
 
 function menu.draw()
-    local screenWidth, screenHeight = love.graphics.getWidth(), love.graphics.getHeight()
-
     -- Configurar cor e desenhar o background
     drawBackground(background)
 
@@ -103,6 +102,16 @@ function menu.mousepressed(x, y, button)
             print("Excluir clicado!")
             -- Ação de excluir
         end
+
+        -- Verificar se o clique foi na área de rolagem
+        local divX = screenWidth * 0.05
+        local divY1 = screenHeight * 0.1
+        local divHeight = screenHeight * 0.5
+        if x >= divX and x <= divX + screenWidth * 0.45 and y >= divY1 and y <= divY1 + divHeight then
+            local clickY = y - divY1
+            scrollY = clickY - (divHeight / 2) + (filmHeight / 2)
+            scrollY = math.max(0, math.min(scrollY, #allFilms * filmHeight - divHeight))
+        end
     end
 end
 
@@ -120,6 +129,14 @@ function menu.keypressed(key)
                 inputFields[currentField] = inputFields[currentField]:sub(1, -2)
             end
         end
+    end
+end
+
+function menu.mousemoved(x, y, dx, dy)
+    local screenHeight = love.graphics.getHeight()
+    local divHeight = screenHeight * 0.5
+    if love.mouse.isDown(1) then
+        scrollY = math.max(0, math.min(scrollY - dy, #allFilms * filmHeight - divHeight))
     end
 end
 
