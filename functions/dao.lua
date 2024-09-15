@@ -1,5 +1,7 @@
 -- Importing
 require("classes.filme")
+require("classes.serie")
+require("classes.realityShow")
 require("functions.stringFunctions")
 
 -- DAO Functions

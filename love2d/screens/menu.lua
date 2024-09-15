@@ -41,8 +41,8 @@ function menu.load()
     -- Inicializa os botões
     menu.buttons = {
         {label = "Filme", screen = "adicionarFilme"},
-        {label = "Série", screen = "screen2"},
-        {label = "Reality show", screen = "screen3"}
+        {label = "Série", screen = "adicionarSerie"},
+        {label = "Reality show", screen = "adicionarRealityShow"}
     }
 
     -- Recebe todos os filmes a serem listados

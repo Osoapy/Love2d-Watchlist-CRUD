@@ -22,8 +22,8 @@ function love.load()
     -- Load screens
     screens.menu = require "screens.menu"
     screens.adicionarFilme = require "screens.adicionarFilme"
-    screens.screen2 = require "screens.screen2"
-    screens.screen3 = require "screens.screen3"
+    screens.adicionarSerie = require "screens.adicionarSerie"
+    screens.adicionarRealityShow = require "screens.adicionarRealityShow"
     
     -- Initialize menu
     screens.menu.load()
