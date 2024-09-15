@@ -1,8 +1,7 @@
 {["nome"] = "Jamaica",["diretor"] = "Diretor Exemplo",["dataLancamento"] = "01/01/2024",["produtora"] = "Produtora Exemplo",["orcamento"] = 500000,["receita"] = 1000000}
 {["produtora"] = "Produtora Exemplo",["orcamento"] = 500000,["receita"] = 1000000,["nome"] = "Sempres",["diretor"] = "Diretor Exemplo",["dataLancamento"] = "01/01/2024"}
-{["nome"] = "Foi",["diretor"] = "Diretor Exemplo",["dataLancamento"] = "01/01/2024",["produtora"] = "Produtora Exemplo",["orcamento"] = 500000,["receita"] = 1000000}
 {["nome"] = "Um",["diretor"] = "Diretor Exemplo",["dataLancamento"] = "01/01/2024",["produtora"] = "Produtora Exemplo",["orcamento"] = 500000,["receita"] = 1000000}
-{["produtora"] = "g",["diretor"] = "g",["receita"] = "g",["orcamento"] = "",["nome"] = "Ping",["dataLancamento"] = ""}
+{["produtora"] = "gsss",["receita"] = "0",["orcamento"] = "0",["nome"] = "Ping",["diretor"] = "g",["dataLancamento"] = "sssssss"}
 {["nome"] = "i wanna",["dataLancamento"] = "",["produtora"] = "myself",["diretor"] = "so",["receita"] = "freaking",["orcamento"] = ""}
 {["orcamento"] = "",["nome"] = "aaa",["dataLancamento"] = "",["produtora"] = "aaa",["diretor"] = "aa",["receita"] = "aaa"}
 {["dataLancamento"] = "ttttt",["produtora"] = "tttt",["diretor"] = "tttt",["receita"] = "tttt",["orcamento"] = "ttttt",["nome"] = "pintttt"}

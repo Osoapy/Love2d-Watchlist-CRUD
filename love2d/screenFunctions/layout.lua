@@ -33,11 +33,22 @@ function drawFilmList(films, scrollY, filmHeight, scrollbarWidth)
     -- Remover o scissor após desenhar
     love.graphics.setScissor()
 
-    -- Recalcular e desenhar a barra de rolagem
-    local scrollbarHeight = math.max((leftDivHeight / (#films * filmHeight)) * leftDivHeight, 20)
+    -- Cálculo da barra de rolagem
     local scrollbarX = leftDivX + divWidth + 10
-    local scrollbarY = leftDivY + (scrollY / (#films * filmHeight)) * leftDivHeight
+    local scrollbarHeight
+    local scrollbarY
 
+    if #films <= visibleFilmCount then
+        -- Quando o número de filmes for menor ou igual ao número de filmes visíveis
+        scrollbarHeight = leftDivHeight  -- A barra de rolagem ocupa toda a altura da div
+        scrollbarY = leftDivY  -- Sem necessidade de rolagem
+    else
+        -- Quando há mais filmes que a área visível
+        scrollbarHeight = math.max((visibleFilmCount / #films) * leftDivHeight, 20)  -- Ajusta a altura da barra
+        scrollbarY = leftDivY + (scrollY / (filmHeight * #films)) * leftDivHeight  -- Ajusta a posição da barra
+    end
+
+    -- Desenhar a barra de rolagem
     love.graphics.setColor(0.6, 0.6, 0.6)
     love.graphics.rectangle("fill", scrollbarX, scrollbarY, scrollbarWidth, scrollbarHeight)
 end

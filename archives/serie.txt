@@ -1,0 +1,1 @@
+{["produtora"] = "aaaaaa",["episodios"] = "aaaaa",["nome"] = "bbbbbbb",["diretor"] = "aaa",["status"] = "aaaa",["temporadas"] = "aaa",["dataLancamento"] = "aaaaaaaa"}

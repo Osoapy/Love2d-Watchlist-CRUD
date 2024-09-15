@@ -8,7 +8,7 @@ function newRealityShow(object)
 
         -- Adding object parameters
         idioma = object.idioma or "0",
-        fomato = object.fomato or "0",
+        formato = object.formato or "0",
         status = object.status or "0",
         apresentador = object.apresentador or "0"
     }
@@ -17,8 +17,8 @@ function newRealityShow(object)
     object = object or {}
 
     -- Setters
-    local setFomato = function(fomato)
-        self.fomato = fomato
+    local setFormato = function(formato)
+        self.formato = formato
     end
 
     local setIdioma = function(idioma)
@@ -34,8 +34,8 @@ function newRealityShow(object)
     end
 
     -- Getters
-    local getFomato = function()
-        return self.fomato
+    local getFormato = function()
+        return self.formato
     end
 
     local getIdioma = function()
@@ -58,14 +58,14 @@ function newRealityShow(object)
     local returnObject = newBackClass(object)
     
     -- Setters
-    returnObject.setFomato = setFomato
+    returnObject.setFormato = setFormato
     returnObject.setIdioma = setIdioma
     returnObject.setStatus = setStatus
     returnObject.setApresentador = setApresentador
 
     -- Getters
     returnObject.getIdioma = getIdioma
-    returnObject.getFomato = getFomato
+    returnObject.getFormato = getFormato
     returnObject.getStatus = getStatus
     returnObject.getApresentador = getApresentador
     returnObject.getType = getType
@@ -74,7 +74,7 @@ function newRealityShow(object)
     returnObject.getSerialized = function()
         local serializedTable = returnObject.getBackClassSerialized()
         serializedTable.idioma = self.idioma
-        serializedTable.fomato = self.fomato
+        serializedTable.formato = self.formato
         serializedTable.status = self.status
 
         return stringfy(serializedTable)

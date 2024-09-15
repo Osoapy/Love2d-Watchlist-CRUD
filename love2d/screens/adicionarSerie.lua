@@ -6,8 +6,8 @@ local filmHeight = 30
 local visibleFilmCount
 local inputFields = {}
 local currentField = nil
-local allFilms = {}
-local filmFile = "archives/filme.txt"
+local allSeries = {}
+local serieFile = "archives/serie.txt"
 local background
 local screenWidth, screenHeight = love.graphics.getWidth(), love.graphics.getHeight()
 
@@ -26,8 +26,12 @@ local scrollbarWidth = 20
 local totalHeight
 local clickedIndex
 
+local buttonSize = screenWidth * 0.05  -- O botão será 5% da largura da tela
+local buttonBackX = divX  -- Manter alinhado com a esquerda da div1
+local buttonBackY = divY1 - buttonSize - 10  -- Colocar o botão 10px acima da div1
+
 -- Variável para armazenar o índice do filme selecionado
-local selectedFilmIndex = nil
+local selectedSerieIndex = nil
 
 -- Campos editáveis
 local fields = {
@@ -35,8 +39,9 @@ local fields = {
     {display = "Data de Lançamento", key = "dataLancamento"},
     {display = "Produtora", key = "produtora"},
     {display = "Diretor", key = "diretor"},
-    {display = "Receita", key = "receita"},
-    {display = "Orçamento", key = "orcamento"}
+    {display = "Temporadas", key = "temporadas"},
+    {display = "Episodios", key = "episodios"},
+    {display = "Status", key = "status"}
 }
 
 function menu.load(wasCalled)
@@ -47,7 +52,14 @@ function menu.load(wasCalled)
     assert(background, "Erro ao carregar a imagem do background!")
 
     -- Inicializa a tela principal
-    love.window.setTitle("Menu")
+    love.window.setTitle("Séries")
+
+    -- Carregar a imagem do botão
+    buttonImage = love.graphics.newImage("assets/button_image.png")  -- Certifique-se de ter a imagem
+    assert(background, "Erro ao carregar a imagem do botão!")
+
+    -- Inicializar o botão com as dimensões da tela
+    updateButtonDimensions()
 
     -- Inicializa os campos de texto
     for _, field in ipairs(fields) do
@@ -55,22 +67,29 @@ function menu.load(wasCalled)
     end
 
     -- Recebe todos os filmes a serem listados
-    allFilms = returnAllObjects(filmFile)
+    allSeries = returnAllObjects(serieFile)
     visibleFilmCount = math.floor(love.graphics.getHeight() * 0.5 / filmHeight)
 
     -- Calcula a altura da barra de rolagem
-    scrollbarHeight = math.max(visibleFilmCount / #allFilms * screenHeight * 0.5, 20)
-    totalHeight = #allFilms * filmHeight
+    scrollbarHeight = math.max(visibleFilmCount / #allSeries * screenHeight * 0.5, 20)
+    totalHeight = #allSeries * filmHeight
 
     if wasCalled then
-        local selectedFilm = allFilms[wasCalled]
-        selectedFilmIndex = wasCalled
+        local selectedFilm = allSeries[wasCalled]
+        selectedSerieIndex = wasCalled
 
         -- Preenche os campos de texto com os valores do filme selecionado
         for _, field in ipairs(fields) do
             inputFields[field.key] = selectedFilm[field.key] or ""
         end
     end
+end
+
+function updateButtonDimensions()
+    -- Recalcular o tamanho e posição do botão conforme a tela
+    buttonSize = screenWidth * 0.05  -- O botão será 5% da largura da tela
+    buttonBackX = divX  -- Manter alinhado com a esquerda da div1
+    buttonBackY = divY1 - buttonSize - 10  -- Colocar o botão 10px acima da div1
 end
 
 function menu.draw()
@@ -89,13 +108,22 @@ function menu.draw()
     -- Configurar cor e desenhar o background
     drawBackground(background)
 
+    -- Atualizar as dimensões do botão
+    updateButtonDimensions()
+
+    -- Desenhar o botão responsivo
+    love.graphics.setColor(1, 0.9, 0.76, 0.21)
+    love.graphics.rectangle("fill", buttonBackX, buttonBackY, buttonSize, buttonSize)
+    love.graphics.setColor(1, 1, 1)
+    love.graphics.draw(buttonImage, buttonBackX, buttonBackY, 0, buttonSize / buttonImage:getWidth(), buttonSize / buttonImage:getHeight())
+
     -- Desenhar o resto do layout
-    drawFilmList(allFilms, scrollY, filmHeight, visibleFilmCount, scrollbarWidth, scrollbarHeight)
+    drawFilmList(allSeries, scrollY, filmHeight, visibleFilmCount, scrollbarWidth, scrollbarHeight)
     drawMessage()
     drawAttributes(fields, inputFields)
 
     -- Botões
-    drawButtons(selectedFilmIndex)
+    drawButtons(selectedSerieIndex)
 end
 
 function menu.mousepressed(x, y, button)
@@ -125,14 +153,19 @@ function menu.mousepressed(x, y, button)
             end
         end
 
+        -- Clique no botão de voltar ao menu
+        if x >= buttonBackX and x <= buttonBackX + buttonSize and y >= buttonBackY and y <= buttonBackY + buttonSize then
+            changeScreen("menu")
+        end
+
         -- Clique num filme
         if not isDraggingScrollbar and x >= divX and x <= divX + divWidth and y >= divY1 and y <= divY1 + divHeight then
             clickedIndex = math.floor((y - divY1 + scrollY) / filmHeight) + 1
 
             -- Verifica se o índice está dentro da lista de filmes
-            if clickedIndex >= 1 and clickedIndex <= #allFilms then
-                selectedFilmIndex = clickedIndex
-                local selectedFilm = allFilms[clickedIndex]
+            if clickedIndex >= 1 and clickedIndex <= #allSeries then
+                selectedSerieIndex = clickedIndex
+                local selectedFilm = allSeries[clickedIndex]
 
                 -- Preenche os campos de texto com os valores do filme selecionado
                 for _, field in ipairs(fields) do
@@ -141,20 +174,20 @@ function menu.mousepressed(x, y, button)
             end
         end
 
-        if not selectedFilmIndex then
+        if not selectedSerieIndex then
             -- Clique no botão Salvar
             if x > deleteButtonX and x < deleteButtonX + buttonWidth and y > buttonY and y < buttonY + buttonHeight then
-                local savingFilm = {}
+                local savingSerie = {}
                 for _, field in ipairs(fields) do
-                    savingFilm[field.key] = inputFields[field.key]
+                    savingSerie[field.key] = inputFields[field.key]
                 end
 
                 -- Agora você pode adicionar esse novo filme à lista de filmes ou salvar em arquivo
-                table.insert(allFilms, savingFilm)
-                local actualFilm = newFilm(savingFilm)
+                table.insert(allSeries, savingSerie)
+                local actualFilm = newSerie(savingSerie)
 
                 -- Adiciona o filme ao arquivo
-                addInFile(filmFile, actualFilm.getSerialized())
+                addInFile(serieFile, actualFilm.getSerialized())
 
                 -- Os campos continuam editáveis, então não limpar os campos após salvar
             end
@@ -168,30 +201,30 @@ function menu.mousepressed(x, y, button)
         else
             -- Clique no botão Alterar
             if x > deleteButtonX and x < deleteButtonX + buttonWidth and y > buttonY and y < buttonY + buttonHeight then
-                local savingFilm = {}
+                local savingSerie = {}
 
                 for _, field in ipairs(fields) do
-                    savingFilm[field.key] = inputFields[field.key]
+                    savingSerie[field.key] = inputFields[field.key]
                 end
 
-                alterFile(filmFile, savingFilm, allFilms[clickedIndex].nome, "filme")
+                alterFile(serieFile, savingSerie, allSeries[clickedIndex].nome, "serie")
 
                 for _, field in ipairs(fields) do
                     inputFields[field.key] = ""
                 end
 
-                selectedFilmIndex = nil
+                selectedSerieIndex = nil
             end
 
             -- Clique no botão Excluir
             if x > saveButtonX and x < saveButtonX + buttonWidth and y > buttonY and y < buttonY + buttonHeight then
-                deleteInFile(filmFile, inputFields["nome"])
+                deleteInFile(serieFile, inputFields["nome"])
 
                 for _, field in ipairs(fields) do
                     inputFields[field.key] = ""
                 end
 
-                selectedFilmIndex = nil
+                selectedSerieIndex = nil
             end
         end
 
