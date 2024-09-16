@@ -1,6 +1,6 @@
 local menu = {}
 
--- Configurações de layout
+-- Layout
 local scrollY = 0
 local filmHeight = 30
 local visibleFilmCount
@@ -26,9 +26,7 @@ local scrollbarWidth = 20
 local totalHeight
 local clickedIndex
 
-local buttonSize = screenWidth * 0.05  -- O botão será 5% da largura da tela
-local buttonBackX = divX  -- Manter alinhado com a esquerda da div1
-local buttonBackY = divY1 - buttonSize - 10  -- Colocar o botão 10px acima da div1
+local buttonImage
 
 -- Variável para armazenar o índice do filme selecionado
 local selectedSerieIndex = nil
@@ -112,10 +110,7 @@ function menu.draw()
     updateButtonDimensions()
 
     -- Desenhar o botão responsivo
-    love.graphics.setColor(1, 0.9, 0.76, 0.21)
-    love.graphics.rectangle("fill", buttonBackX, buttonBackY, buttonSize, buttonSize)
-    love.graphics.setColor(1, 1, 1)
-    love.graphics.draw(buttonImage, buttonBackX, buttonBackY, 0, buttonSize / buttonImage:getWidth(), buttonSize / buttonImage:getHeight())
+    drawBackButton(buttonImage)
 
     -- Desenhar o resto do layout
     drawFilmList(allSeries, scrollY, filmHeight, visibleFilmCount, scrollbarWidth, scrollbarHeight)
@@ -141,6 +136,15 @@ function menu.mousepressed(x, y, button)
         local saveButtonX = attributesDivX + 10
         local deleteButtonX = attributesDivX + attributesDivWidth - buttonWidth - 10
 
+        local buttonSize = screenWidth * 0.05  -- O botão será 5% da largura da tela
+        local buttonBackX = screenWidth * 0.05  -- Manter alinhado com a esquerda da div1
+        local buttonBackY = screenHeight * 0.1 - buttonSize - 10  -- Colocar o botão 10px acima da div1
+
+        -- Clique no botão de voltar ao menu
+        if x >= buttonBackX and x <= buttonBackX + buttonSize and y >= buttonBackY and y <= buttonBackY + buttonSize then
+            changeScreen("menu")
+        end
+
         -- Verificar se o clique foi em algum campo de texto da div de atributos
         for i, field in ipairs(fields) do
             local fieldX = attributesDivX + 120
@@ -151,11 +155,6 @@ function menu.mousepressed(x, y, button)
                 currentField = field.key
                 break
             end
-        end
-
-        -- Clique no botão de voltar ao menu
-        if x >= buttonBackX and x <= buttonBackX + buttonSize and y >= buttonBackY and y <= buttonBackY + buttonSize then
-            changeScreen("menu")
         end
 
         -- Clique num filme

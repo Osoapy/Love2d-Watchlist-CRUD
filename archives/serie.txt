@@ -1,1 +1,5 @@
-{["produtora"] = "aaaaaa",["episodios"] = "aaaaa",["nome"] = "bbbbbbb",["diretor"] = "aaa",["status"] = "aaaa",["temporadas"] = "aaa",["dataLancamento"] = "aaaaaaaa"}
+{["produtora"] = "Netflix", ["episodios"] = "50", ["nome"] = "Stranger Things", ["diretor"] = "Matt Duffer", ["status"] = "Em produção", ["temporadas"] = "4", ["dataLancamento"] = "2016-07-15"}
+{["produtora"] = "HBO", ["episodios"] = "73", ["nome"] = "Game of Thrones", ["diretor"] = "David Benioff", ["status"] = "Concluída", ["temporadas"] = "8", ["dataLancamento"] = "2011-04-17"}
+{["produtora"] = "Amazon Prime", ["episodios"] = "24", ["nome"] = "The Boys", ["diretor"] = "Eric Kripke", ["status"] = "Em produção", ["temporadas"] = "3", ["dataLancamento"] = "2019-07-26"}
+{["produtora"] = "Disney+", ["episodios"] = "12", ["nome"] = "The Mandalorian", ["diretor"] = "Jon Favreau", ["status"] = "Em produção", ["temporadas"] = "2", ["dataLancamento"] = "2019-11-12"}
+{["produtora"] = "Apple TV+", ["episodios"] = "30", ["nome"] = "Ted Lasso", ["diretor"] = "Bill Lawrence", ["status"] = "Em produção", ["temporadas"] = "3", ["dataLancamento"] = "2020-08-14"}

@@ -1,17 +1,5 @@
-{["nome"] = "Jamaica",["diretor"] = "Diretor Exemplo",["dataLancamento"] = "01/01/2024",["produtora"] = "Produtora Exemplo",["orcamento"] = 500000,["receita"] = 1000000}
-{["produtora"] = "Produtora Exemplo",["orcamento"] = 500000,["receita"] = 1000000,["nome"] = "Sempres",["diretor"] = "Diretor Exemplo",["dataLancamento"] = "01/01/2024"}
-{["nome"] = "Um",["diretor"] = "Diretor Exemplo",["dataLancamento"] = "01/01/2024",["produtora"] = "Produtora Exemplo",["orcamento"] = 500000,["receita"] = 1000000}
-{["produtora"] = "gsss",["receita"] = "0",["orcamento"] = "0",["nome"] = "Ping",["diretor"] = "g",["dataLancamento"] = "sssssss"}
-{["nome"] = "i wanna",["dataLancamento"] = "",["produtora"] = "myself",["diretor"] = "so",["receita"] = "freaking",["orcamento"] = ""}
-{["orcamento"] = "",["nome"] = "aaa",["dataLancamento"] = "",["produtora"] = "aaa",["diretor"] = "aa",["receita"] = "aaa"}
-{["dataLancamento"] = "ttttt",["produtora"] = "tttt",["diretor"] = "tttt",["receita"] = "tttt",["orcamento"] = "ttttt",["nome"] = "pintttt"}
-{["diretor"] = "a",["dataLancamento"] = "a",["produtora"] = "a",["receita"] = "a",["orcamento"] = "aa",["nome"] = "Maybe"}
-{["nome"] = "aaaa",["diretor"] = "aaa",["dataLancamento"] = "aa",["produtora"] = "aaa",["receita"] = "aa",["orcamento"] = "aa"}
-{["nome"] = "aaaa",["diretor"] = "aaa",["dataLancamento"] = "aa",["produtora"] = "aaa",["receita"] = "aa",["orcamento"] = "aa"}
-{["nome"] = "11111",["diretor"] = "111",["dataLancamento"] = "111",["produtora"] = "111",["orcamento"] = "111",["receita"] = "1111"}
-{["nome"] = "11111asas",["diretor"] = "111",["dataLancamento"] = "111",["produtora"] = "111",["orcamento"] = "111",["receita"] = "1111"}
-{["produtora"] = "aaa",["receita"] = "2",["orcamento"] = "333",["nome"] = "sbado",["diretor"] = "11",["dataLancamento"] = "aaa"}
-{["produtora"] = "aaa",["receita"] = "2",["orcamento"] = "333",["nome"] = "sbadogg",["diretor"] = "11",["dataLancamento"] = "aaagg"}
-{["nome"] = "hahahahahahahhahahahahahaahaahhahaha",["orcamento"] = "aaaaaaaaaaaaah",["diretor"] = "aaaaaaaaaaaaaaaaa",["dataLancamento"] = "aaaaaaaaaaaaaaa",["produtora"] = "aaaaaaaaaaaaaa",["receita"] = "aaaaaaaaaaaa"}
-{["diretor"] = "a",["dataLancamento"] = "a",["orcamento"] = "1",["receita"] = "1",["nome"] = "apareça",["produtora"] = "a"}
-{["receita"] = 1000000,["nome"] = "Ums",["diretor"] = "Diretor Exemplo",["dataLancamento"] = "01/01/2024",["produtora"] = "Produtora Exemplo",["orcamento"] = 500000}
+{["produtora"] = "Warner Bros.", ["receita"] = "1000000000", ["orcamento"] = "200000000", ["nome"] = "The Dark Knight", ["diretor"] = "Christopher Nolan", ["dataLancamento"] = "2008-07-18"}
+{["produtora"] = "Marvel Studios", ["receita"] = "2798000000", ["orcamento"] = "356000000", ["nome"] = "Avengers: Endgame", ["diretor"] = "Anthony Russo", ["dataLancamento"] = "2019-04-26"}
+{["produtora"] = "Paramount Pictures", ["receita"] = "709700000", ["orcamento"] = "190000000", ["nome"] = "Transformers", ["diretor"] = "Michael Bay", ["dataLancamento"] = "2007-07-03"}
+{["produtora"] = "Sony Pictures", ["receita"] = "585800000", ["orcamento"] = "160000000", ["nome"] = "Spider-Man: Homecoming", ["diretor"] = "Jon Watts", ["dataLancamento"] = "2017-07-07"}
+{["produtora"] = "Universal Pictures", ["receita"] = "1500000000", ["orcamento"] = "250000000", ["nome"] = "Jurassic World", ["diretor"] = "Colin Trevorrow", ["dataLancamento"] = "2015-06-12"}

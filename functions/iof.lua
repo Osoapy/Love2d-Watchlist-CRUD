@@ -1,3 +1,4 @@
+-- Print menu function
 function printMenu()
     print("[1] CRIAR")
     print("[2] LISTAR")
@@ -5,6 +6,7 @@ function printMenu()
     print("[4] DELETAR")
 end
 
+-- Read input function
 function readInput(ehNumero)
     ehNumero = ehNumero or nil
     io.stdin:flush()
@@ -18,6 +20,7 @@ function readInput(ehNumero)
     return n
 end
 
+-- Get attribute function
 function getAtributte(nome, ehFeminino, ehNumero)
     ehFeminino = ehFeminino or nil
     ehNumero = ehNumero or nil

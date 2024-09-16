@@ -1,1 +1,5 @@
-{["status"] = "aaaa",["formato"] = "aaaaa",["idioma"] = "aa",["nome"] = "aaaaaaa",["diretor"] = "aaaaaa",["dataLancamento"] = "aaaaa",["produtora"] = "aa"}
+{["status"] = "Em produção", ["formato"] = "Competição", ["idioma"] = "Inglês", ["nome"] = "The Voice", ["diretor"] = "Alan Carter", ["dataLancamento"] = "2011-04-26", ["produtora"] = "NBC"}
+{["status"] = "Concluído", ["formato"] = "Sobrevivência", ["idioma"] = "Inglês", ["nome"] = "Survivor", ["diretor"] = "Jeff Probst", ["dataLancamento"] = "2000-05-31", ["produtora"] = "CBS"}
+{["status"] = "Em produção", ["formato"] = "Reality de Cozinha", ["idioma"] = "Inglês", ["nome"] = "MasterChef", ["diretor"] = "Brian Smith", ["dataLancamento"] = "2010-07-27", ["produtora"] = "Fox"}
+{["status"] = "Concluído", ["formato"] = "Namoro", ["idioma"] = "Inglês", ["nome"] = "The Bachelor", ["diretor"] = "Ken Fuchs", ["dataLancamento"] = "2002-03-25", ["produtora"] = "ABC"}
+{["status"] = "Em produção", ["formato"] = "Reforma de Casas", ["idioma"] = "Inglês", ["nome"] = "Queer Eye", ["diretor"] = "Hisham Abed", ["dataLancamento"] = "2018-02-07", ["produtora"] = "Netflix"}

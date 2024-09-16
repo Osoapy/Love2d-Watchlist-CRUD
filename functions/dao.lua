@@ -19,7 +19,7 @@ function printFile(filename)
     file:close()
 end
 
--- Função para ler arquivo
+-- Read file function
 function readFile(file)
     local f = io.open(file, "r")
     if f then
@@ -31,6 +31,7 @@ function readFile(file)
     end
 end
 
+-- Add line in the file function
 function addInFile(filename, string)
     local file = io.open(filename, "r")
     if not file then
@@ -53,7 +54,7 @@ function addInFile(filename, string)
     file:close()
 end
 
-
+-- Alter line in the file function
 function alterFile(filename, obj, nome, type)
     -- Getting the newLine
     local newLine
@@ -93,6 +94,7 @@ function alterFile(filename, obj, nome, type)
     file:close()
 end
 
+-- Delete given line function
 function deleteInFile(filename, nome)
     -- Getting the newLine
     local file = io.open(filename, "r")
@@ -126,6 +128,7 @@ function deleteInFile(filename, nome)
     file:close()
 end
 
+-- Return all parsed lines function
 function returnAllObjects(filename)
     -- Getting the newLine
     local newLine

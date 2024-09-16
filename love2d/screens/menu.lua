@@ -78,16 +78,7 @@ function menu.draw()
     drawAttributes({}, {}, 1)
 
     -- Botões
-    love.graphics.setColor(1, 1, 1)
-    love.graphics.printf("CRIAR / EDITAR", rightDivX, rightDivY + 10, rightDivWidth, "center")
-    local buttonWidth, buttonHeight = rightDivWidth * 0.8, rightDivHeight * 0.15
-    for i, button in ipairs(menu.buttons) do
-        local buttonX, buttonY = rightDivX + (rightDivWidth - buttonWidth) / 2, rightDivY + 50 + (i - 1) * (buttonHeight + 20)
-        love.graphics.setColor(1, 1, 1)
-        love.graphics.rectangle("fill", buttonX, buttonY, buttonWidth, buttonHeight)
-        love.graphics.setColor(0, 0, 0)
-        love.graphics.printf(button.label, buttonX, buttonY + (buttonHeight / 3), buttonWidth, "center")
-    end
+    drawResponsiveButtons(menu.buttons)
 end
 
 function menu.mousepressed(x, y, button)

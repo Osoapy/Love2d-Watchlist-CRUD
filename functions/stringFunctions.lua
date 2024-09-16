@@ -1,3 +1,4 @@
+-- Stringfy function
 function stringfy(value, currentDepth, indentSize)
     skipNewlines = skipNewlines or false
     currentDepth = currentDepth or 0
@@ -44,6 +45,7 @@ function stringfy(value, currentDepth, indentSize)
     return result
 end
 
+-- Parse string function
 function parse(string)
     local func, err = load("return " .. string)
     if not func then
