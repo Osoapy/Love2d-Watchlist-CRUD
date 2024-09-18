@@ -10,8 +10,8 @@ require("screenFunctions.layout")
 -- Window config
 love.window.setMode(800, 600, {
     resizable = true,
-    minwidth = 800,   
-    minheight = 600    
+    minwidth = 1080,   
+    minheight = 720  
 })
 
 function love.load()

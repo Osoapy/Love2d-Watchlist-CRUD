@@ -34,7 +34,7 @@ local selectedRSIndex = nil
 -- Campos editáveis
 local fields = {
     {display = "Nome", key = "nome"},
-    {display = "Data de Lançamento", key = "dataLancamento"},
+    {display = "Dt Lançamento", key = "dataLancamento"},
     {display = "Produtora", key = "produtora"},
     {display = "Diretor", key = "diretor"},
     {display = "Idioma", key = "idioma"},
@@ -113,7 +113,7 @@ function menu.draw()
     drawBackButton(buttonImage)
 
     -- Desenhar o resto do layout
-    drawFilmList(allRealityShows, scrollY, filmHeight, visibleFilmCount, scrollbarWidth, scrollbarHeight)
+    drawFilmList(allRealityShows, scrollY, filmHeight, visibleFilmCount, scrollbarWidth, scrollbarHeight, true)
     drawMessage()
     drawAttributes(fields, inputFields)
 

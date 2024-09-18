@@ -7,7 +7,11 @@ local visibleFilmCount
 local inputFields = {}
 local currentField = nil
 local allFilms = {}
+local allSeries = {}
+local allRealityShows = {}
 local filmFile = "archives/filme.txt"
+local serieFile = "archives/serie.txt"
+local realityShowFile = "archives/realityShow.txt"
 local background
 local screenWidth, screenHeight = love.graphics.getWidth(), love.graphics.getHeight()
 
@@ -45,35 +49,53 @@ function menu.load()
         {label = "Reality show", screen = "adicionarRealityShow"}
     }
 
-    -- Recebe todos os filmes a serem listados
-    filmFile = "archives/filme.txt"
+    -- Recebe todos os filmes, séries e reality shows a serem listados
     allFilms = returnAllObjects(filmFile)
-    totalHeight = #allFilms * filmHeight
+    allSeries = returnAllObjects(serieFile)
+    allRealityShows = returnAllObjects(realityShowFile)
+
+    totalHeight = #allFilms * filmHeight + #allSeries * filmHeight + #allRealityShows * filmHeight
     visibleFilmCount = math.floor(love.graphics.getHeight() * 0.5 / filmHeight)
 end
 
 function menu.draw()
-    -- Recalcular as dimensões da tela
+    -- Recalcular as dimensões da tela e das divs
     screenWidth, screenHeight = love.graphics.getWidth(), love.graphics.getHeight()
-
-    -- Recalcular as dimensões das divs
     divWidth, divHeight = screenWidth * 0.45, screenHeight * 0.5
     divX, divY1 = screenWidth * 0.05, screenHeight * 0.1
     messageDivX, messageDivY = screenWidth * 0.05, screenHeight * 0.65
     messageDivWidth, messageDivHeight = screenWidth * 0.3, screenHeight * 0.25
-    secondDivHeight = screenHeight * 0.3
     spacing = screenHeight * 0.05
     divY2 = divY1 + divHeight + spacing
-    
+
     -- Configurar cor e desenhar o background
     drawBackground(background)
 
-    -- Definir e desenhar a primeira div
-    drawFilmList(allFilms, scrollY, filmHeight, visibleFilmCount, scrollbarWidth, scrollbarHeight)
+    -- Resetar o scissor
+    drawFilmListDiv(screenWidth * 0.05, screenHeight * 0.1, screenWidth * 0.45, screenHeight * 0.5)
 
-    -- Segunda div
-    drawMessage(screenWidth, screenHeight)
+    -- Desenhar lista de filmes (primeira lista)
+    drawFilmList(allFilms, scrollY, filmHeight, scrollbarWidth, scrollbarHeight, false)
     
+    -- Resetar o scissor para não afetar as próximas divs
+    love.graphics.setScissor()
+
+    -- Desenhar lista de séries (segunda lista)
+    local seriesScrollY = scrollY - (#allFilms * filmHeight)
+    drawFilmList(allSeries, seriesScrollY, filmHeight, scrollbarWidth, scrollbarHeight, false)
+    
+    -- Resetar o scissor novamente
+    love.graphics.setScissor()
+
+    -- Desenhar lista de reality shows (terceira lista)
+    local realityScrollY = scrollY - (#allFilms + #allSeries) * filmHeight
+    drawFilmList(allRealityShows, realityScrollY, filmHeight, scrollbarWidth, scrollbarHeight, false)
+
+    love.graphics.setScissor()
+
+    -- Segunda div (mensagem)
+    drawMessage()
+
     -- Div direita
     drawAttributes({}, {}, 1)
 
@@ -98,25 +120,24 @@ function menu.mousepressed(x, y, button)
             end
         end
 
+        -- Verificar clique na lista de filmes
         if x >= divX and x <= divX + divWidth and y >= divY1 and y <= divY1 + divHeight then
             clickedIndex = math.floor((y - divY1 + scrollY) / filmHeight) + 1
 
-            -- Verifica se o índice está dentro da lista de filmes
             if clickedIndex >= 1 and clickedIndex <= #allFilms then
-                local selectedFilm = allFilms[clickedIndex]
-
-                -- Chama a função de mudança de tela para a tela de edição de filmes
                 changeScreen("adicionarFilme", clickedIndex)
+            elseif clickedIndex > #allFilms and clickedIndex <= #allFilms + #allSeries then
+                changeScreen("adicionarSerie", clickedIndex - #allFilms)
+            elseif clickedIndex > #allFilms + #allSeries and clickedIndex <= #allFilms + #allSeries + #allRealityShows then
+                changeScreen("adicionarRealityShow", clickedIndex - #allFilms - #allSeries)
             end
         end
     end
 end
-    
--- Função para detectar a rolagem do mouse
+
 function menu.wheelmoved(x, y)
     local screenHeight = love.graphics.getHeight()
     local divHeight = screenHeight * 0.5
-    -- Limitar o scroll para não ir além do último filme
     scrollY = math.max(0, math.min(scrollY - y * 20, totalHeight - divHeight))
 end
 

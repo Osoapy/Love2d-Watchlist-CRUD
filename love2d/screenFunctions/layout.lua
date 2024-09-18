@@ -1,10 +1,27 @@
+function drawTextWithShadow(text, x, y, limit, align)
+    -- Sombra preta
+    love.graphics.setColor(0, 0, 0)
+    love.graphics.printf(text, x + 2, y + 2, limit, align)
+
+    -- Texto branco
+    love.graphics.setColor(1, 1, 1)
+    love.graphics.printf(text, x, y, limit, align)
+end
+
+
 function drawBackground(background)
     love.graphics.setColor(1, 1, 1)
     local screenWidth, screenHeight = love.graphics.getWidth(), love.graphics.getHeight()
     love.graphics.draw(background, 0, 0, 0, screenWidth / background:getWidth(), screenHeight / background:getHeight())
 end
 
-function drawFilmList(films, scrollY, filmHeight, scrollbarWidth)
+function drawFilmListDiv(leftDivX, leftDivY, divWidth, leftDivHeight)
+    -- Draw film list div
+    love.graphics.setColor(1, 0.9, 0.76, 0.21)
+    love.graphics.rectangle("fill", leftDivX, leftDivY, divWidth, leftDivHeight)
+end
+
+function drawFilmList(films, scrollY, filmHeight, scrollbarWidth, bool)
     local screenWidth, screenHeight = love.graphics.getWidth(), love.graphics.getHeight()
     local divWidth = screenWidth * 0.45
     local leftDivX, leftDivY = screenWidth * 0.05, screenHeight * 0.1
@@ -13,9 +30,9 @@ function drawFilmList(films, scrollY, filmHeight, scrollbarWidth)
     -- Use window height for calculate films visible
     local visibleFilmCount = math.floor(leftDivHeight / filmHeight)
 
-    -- Draw film list div
-    love.graphics.setColor(1, 0.9, 0.76, 0.21)
-    love.graphics.rectangle("fill", leftDivX, leftDivY, divWidth, leftDivHeight)
+    if bool then  
+        drawFilmListDiv(leftDivX, leftDivY, divWidth, leftDivHeight)    
+    end
     
     -- Clipping adjusting
     love.graphics.setScissor(leftDivX, leftDivY, divWidth, leftDivHeight)
@@ -24,10 +41,13 @@ function drawFilmList(films, scrollY, filmHeight, scrollbarWidth)
     local filmStartIndex = math.floor(scrollY / filmHeight) + 1
     local filmEndIndex = math.min(filmStartIndex + visibleFilmCount - 1, #films)
 
+    -- Adicionando a verificação para evitar acessar um índice inválido
     for i = filmStartIndex, filmEndIndex do
         local film = films[i]
-        love.graphics.setColor(0, 0, 0)
-        love.graphics.printf(film.nome, leftDivX + 10, leftDivY + (i - filmStartIndex) * filmHeight - (scrollY % filmHeight), divWidth - 30, "left")
+        if film then  -- Certifica-se de que o film não é nil
+            love.graphics.setColor(0, 0, 0)
+            drawTextWithShadow(film.nome, leftDivX + 10, leftDivY + (i - filmStartIndex) * filmHeight - (scrollY % filmHeight), divWidth - 30, "left")
+        end
     end
 
     -- Removing clipping
@@ -39,12 +59,13 @@ function drawFilmList(films, scrollY, filmHeight, scrollbarWidth)
     local scrollbarY
 
     if #films <= visibleFilmCount then
-        scrollbarHeight = leftDivHeight  -- When the is not much films it is the same height as the div
-        scrollbarY = leftDivY  -- No need to scroll
+        scrollbarHeight = leftDivHeight  -- Quando há poucos filmes
+        scrollbarY = leftDivY  -- Sem necessidade de rolar
     else
-        scrollbarHeight = math.max((visibleFilmCount / #films) * leftDivHeight, 20)  
-        scrollbarY = leftDivY + (scrollY / (filmHeight * #films)) * leftDivHeight 
-    end
+        local scrollProportion = visibleFilmCount / #films
+        scrollbarHeight = math.max(scrollProportion * leftDivHeight, 20)
+        scrollbarY = leftDivY + (scrollY / (filmHeight * (#films - visibleFilmCount))) * leftDivHeight
+    end    
 
     -- Drawing the scroll
     love.graphics.setColor(0.6, 0.6, 0.6)
@@ -75,18 +96,18 @@ function drawResponsiveButtons(buttons)
 
     -- Drawing the title
     love.graphics.setColor(1, 1, 1)
-    love.graphics.printf("CRIAR / EDITAR", rightDivX, rightDivY + 10, rightDivWidth, "center")
+    drawTextWithShadow("CRIAR / EDITAR", rightDivX, rightDivY + 10, rightDivWidth, "center")
 
     -- Going by each button in a responsive way
     for i, button in ipairs(buttons) do
         local buttonX = rightDivX + (rightDivWidth - buttonWidth) / 2
         local buttonY = rightDivY + 50 + (i - 1) * (buttonHeight + 20)
 
-        love.graphics.setColor(1, 1, 1)
+        love.graphics.setColor(1, 0.9, 0.76, 0.43)
         love.graphics.rectangle("fill", buttonX, buttonY, buttonWidth, buttonHeight)
 
         love.graphics.setColor(0, 0, 0)
-        love.graphics.printf(button.label, buttonX, buttonY + (buttonHeight / 3), buttonWidth, "center")
+        drawTextWithShadow(button.label, buttonX, buttonY + (buttonHeight / 3), buttonWidth, "center")
     end
 end
 
@@ -102,7 +123,7 @@ function drawMessage()
     love.graphics.setColor(1, 0.9, 0.76, 0.21)
     love.graphics.rectangle("fill", divX, divY2, divWidth, secondDivHeight)
     love.graphics.setColor(1, 1, 1)
-    love.graphics.printf("YOU ARE WHAT YOU ARE WATCHING", divX, divY2 + secondDivHeight / 2 - 15, divWidth, "center")
+    drawTextWithShadow("YOU ARE WHAT YOU ARE WATCHING", divX, divY2 + secondDivHeight / 2 - 15, divWidth, "center")
 end
 
 function drawAttributes(fields, inputFields, drawHalf)
@@ -114,19 +135,35 @@ function drawAttributes(fields, inputFields, drawHalf)
     love.graphics.setColor(1, 0.9, 0.76, 0.21)
     love.graphics.rectangle("fill", attributesDivX, attributesDivY, attributesDivWidth, attributesDivHeight)
 
+    -- Adicionar título CRIAR / EDITAR
+    love.graphics.setColor(1, 1, 1)
+    drawTextWithShadow("CRIAR / EDITAR", attributesDivX, attributesDivY + 10, attributesDivWidth, "center")
+
     drawHalf = drawHalf or nil
 
-    if(not drawHalf) then
+    if not drawHalf then
         for i, field in ipairs(fields) do
-            love.graphics.setColor(1, 1, 1)
-            love.graphics.printf(field.display .. ": ", attributesDivX + 10, attributesDivY + 30 + (i - 1) * 40, attributesDivWidth - 20, "left")
+            -- Espaçamento entre o texto e o campo
+            local textX = attributesDivX + 10
+            local fieldX = attributesDivX + 150
 
+            -- Tratar o campo "Dt lançamento" para quebrar corretamente
+            local displayText = field.display
+            if field.key == "dataLancamento" and string.len(displayText) > 6 then
+                displayText = string.sub(displayText, 1, 15) .. "..."
+            end
+
+            -- Desenhar o texto com sombra
+            drawTextWithShadow(displayText .. ": ", textX, attributesDivY + 50 + (i - 1) * 40, attributesDivWidth - 20, "left")
+
+            -- Desenhar o campo preenchível
             love.graphics.setColor(1, 0.9, 0.76, 0.21)
-            love.graphics.rectangle("line", attributesDivX + 120, attributesDivY + 40 + (i - 1) * 40, attributesDivWidth - 130, 30)
+            love.graphics.rectangle("line", fieldX, attributesDivY + 60 + (i - 1) * 40, attributesDivWidth - 160, 30)
             local value = inputFields[field.key] or ""
 
+            -- Desenhar o valor do campo
             love.graphics.setColor(1, 1, 1)
-            love.graphics.printf(value, attributesDivX + 125, attributesDivY + 30 + (i - 1) * 40, attributesDivWidth - 140, "left")
+            love.graphics.printf(value, fieldX + 5, attributesDivY + 60 + (i - 1) * 40, attributesDivWidth - 170, "left")
         end
     end
 end
@@ -140,21 +177,13 @@ function drawButtons(selectedFilmIndex)
     local attributesDivHeight = screenHeight * 0.8
 
     local buttonWidth, buttonHeight = attributesDivWidth * 0.4, 40
-    local buttonY = attributesDivY + attributesDivHeight - buttonHeight - 20
+    local buttonY = attributesDivY + attributesDivHeight - buttonHeight - 60  -- Centralizando verticalmente
     local saveButtonX, deleteButtonX = attributesDivX + 10, attributesDivX + attributesDivWidth - buttonWidth - 10
     local borderRadius = 5
 
     local function drawRoundedButton(x, y, width, height, color)
         love.graphics.setColor(color)
-        love.graphics.rectangle("fill", x + borderRadius, y, width - borderRadius * 2, height)
-        
-        love.graphics.arc("fill", x + borderRadius, y + borderRadius, borderRadius, math.pi, 3 * math.pi / 2)  -- Canto superior esquerdo
-        love.graphics.arc("fill", x + width - borderRadius, y + borderRadius, borderRadius, 3 * math.pi / 2, 0)  -- Canto superior direito
-        love.graphics.arc("fill", x + borderRadius, y + height - borderRadius, borderRadius, math.pi / 2, math.pi)  -- Canto inferior esquerdo
-        love.graphics.arc("fill", x + width - borderRadius, y + height - borderRadius, borderRadius, 0, math.pi / 2)  -- Canto inferior direito
-        
-        love.graphics.rectangle("fill", x, y + borderRadius, borderRadius, height - borderRadius * 2)  -- Lado esquerdo
-        love.graphics.rectangle("fill", x + width - borderRadius, y + borderRadius, borderRadius, height - borderRadius * 2)  -- Lado direito
+        love.graphics.rectangle("fill", x, y, width, height)
     end
 
     if selectedFilmIndex then
