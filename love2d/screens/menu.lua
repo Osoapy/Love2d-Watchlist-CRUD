@@ -9,10 +9,8 @@ local currentField = nil
 local allFilms = {}
 local allSeries = {}
 local allRealityShows = {}
-local filmFile = "archives/filme.txt"
-local serieFile = "archives/serie.txt"
-local realityShowFile = "archives/realityShow.txt"
 local background
+local divBackground
 local screenWidth, screenHeight = love.graphics.getWidth(), love.graphics.getHeight()
 
 local divWidth, divHeight = screenWidth * 0.45, screenHeight * 0.5
@@ -34,10 +32,16 @@ local rightDivWidth = screenWidth * 0.35
 local rightDivHeight = screenHeight * 0.8
 local rightDivX, rightDivY = screenWidth - rightDivWidth - screenWidth * 0.05, screenHeight * 0.1
 
+local everyObject = {};
+
 function menu.load()
     -- Carregar a imagem do background
     background = love.graphics.newImage("assets/background.png")
     assert(background, "Erro ao carregar a imagem do background!")
+
+    -- Carregar a imagem da div
+    divBackground = love.graphics.newImage("assets/divBG.png")
+    assert(background, "Erro ao carregar a imagem da div!")
 
     -- Inicializa a tela principal
     love.window.setTitle("Menu")
@@ -48,14 +52,6 @@ function menu.load()
         {label = "Série", screen = "adicionarSerie"},
         {label = "Reality show", screen = "adicionarRealityShow"}
     }
-
-    -- Recebe todos os filmes, séries e reality shows a serem listados
-    allFilms = returnAllObjects(filmFile)
-    allSeries = returnAllObjects(serieFile)
-    allRealityShows = returnAllObjects(realityShowFile)
-
-    totalHeight = #allFilms * filmHeight + #allSeries * filmHeight + #allRealityShows * filmHeight
-    visibleFilmCount = math.floor(love.graphics.getHeight() * 0.5 / filmHeight)
 end
 
 function menu.draw()
@@ -71,27 +67,13 @@ function menu.draw()
     -- Configurar cor e desenhar o background
     drawBackground(background)
 
-    -- Resetar o scissor
-    drawFilmListDiv(screenWidth * 0.05, screenHeight * 0.1, screenWidth * 0.45, screenHeight * 0.5)
+    local leftDivX, leftDivY = screenWidth * 0.05, screenHeight * 0.1
+    local leftDivHeight = screenHeight * 0.5
 
-    -- Desenhar lista de filmes (primeira lista)
-    drawFilmList(allFilms, scrollY, filmHeight, scrollbarWidth, scrollbarHeight, false)
+    drawFilmListDiv(leftDivX, leftDivY, divWidth, leftDivHeight)
     
-    -- Resetar o scissor para não afetar as próximas divs
-    love.graphics.setScissor()
-
-    -- Desenhar lista de séries (segunda lista)
-    local seriesScrollY = scrollY - (#allFilms * filmHeight)
-    drawFilmList(allSeries, seriesScrollY, filmHeight, scrollbarWidth, scrollbarHeight, false)
-    
-    -- Resetar o scissor novamente
-    love.graphics.setScissor()
-
-    -- Desenhar lista de reality shows (terceira lista)
-    local realityScrollY = scrollY - (#allFilms + #allSeries) * filmHeight
-    drawFilmList(allRealityShows, realityScrollY, filmHeight, scrollbarWidth, scrollbarHeight, false)
-
-    love.graphics.setScissor()
+    -- Configurar cor e desenhar o background
+    drawDivBG(divBackground, leftDivX, leftDivY, divWidth, leftDivHeight)
 
     -- Segunda div (mensagem)
     drawMessage()
@@ -119,26 +101,7 @@ function menu.mousepressed(x, y, button)
                 changeScreen(btn.screen)
             end
         end
-
-        -- Verificar clique na lista de filmes
-        if x >= divX and x <= divX + divWidth and y >= divY1 and y <= divY1 + divHeight then
-            clickedIndex = math.floor((y - divY1 + scrollY) / filmHeight) + 1
-
-            if clickedIndex >= 1 and clickedIndex <= #allFilms then
-                changeScreen("adicionarFilme", clickedIndex)
-            elseif clickedIndex > #allFilms and clickedIndex <= #allFilms + #allSeries then
-                changeScreen("adicionarSerie", clickedIndex - #allFilms)
-            elseif clickedIndex > #allFilms + #allSeries and clickedIndex <= #allFilms + #allSeries + #allRealityShows then
-                changeScreen("adicionarRealityShow", clickedIndex - #allFilms - #allSeries)
-            end
-        end
     end
-end
-
-function menu.wheelmoved(x, y)
-    local screenHeight = love.graphics.getHeight()
-    local divHeight = screenHeight * 0.5
-    scrollY = math.max(0, math.min(scrollY - y * 20, totalHeight - divHeight))
 end
 
 return menu

@@ -113,7 +113,7 @@ function menu.draw()
     drawBackButton(buttonImage)
 
     -- Desenhar o resto do layout
-    drawFilmList(allSeries, scrollY, filmHeight, visibleFilmCount, scrollbarWidth, scrollbarHeight, true)
+    drawFilmList(allSeries, scrollY, filmHeight, visibleFilmCount, scrollbarWidth, scrollbarHeight)
     drawMessage()
     drawAttributes(fields, inputFields)
 

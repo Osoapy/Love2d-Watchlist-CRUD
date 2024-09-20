@@ -8,11 +8,15 @@ function drawTextWithShadow(text, x, y, limit, align)
     love.graphics.printf(text, x, y, limit, align)
 end
 
-
 function drawBackground(background)
     love.graphics.setColor(1, 1, 1)
     local screenWidth, screenHeight = love.graphics.getWidth(), love.graphics.getHeight()
     love.graphics.draw(background, 0, 0, 0, screenWidth / background:getWidth(), screenHeight / background:getHeight())
+end
+
+function drawDivBG(background, leftDivX, leftDivY, divWidth, leftDivHeight)
+    love.graphics.setColor(1, 1, 1, 0.43)
+    love.graphics.draw(background, leftDivX, leftDivY, 0, divWidth / background:getWidth(), leftDivHeight / background:getHeight())
 end
 
 function drawFilmListDiv(leftDivX, leftDivY, divWidth, leftDivHeight)
@@ -21,53 +25,47 @@ function drawFilmListDiv(leftDivX, leftDivY, divWidth, leftDivHeight)
     love.graphics.rectangle("fill", leftDivX, leftDivY, divWidth, leftDivHeight)
 end
 
-function drawFilmList(films, scrollY, filmHeight, scrollbarWidth, bool)
+function drawFilmList(films, scrollY, filmHeight, scrollbarWidth)
     local screenWidth, screenHeight = love.graphics.getWidth(), love.graphics.getHeight()
     local divWidth = screenWidth * 0.45
     local leftDivX, leftDivY = screenWidth * 0.05, screenHeight * 0.1
     local leftDivHeight = screenHeight * 0.5
 
-    -- Use window height for calculate films visible
+    -- Recalcular o número de filmes visíveis com base na altura da tela
     local visibleFilmCount = math.floor(leftDivHeight / filmHeight)
 
-    if bool then  
-        drawFilmListDiv(leftDivX, leftDivY, divWidth, leftDivHeight)    
-    end
+    -- Desenha a área da lista de filmes
+    love.graphics.setColor(1, 0.9, 0.76, 0.21)
+    love.graphics.rectangle("fill", leftDivX, leftDivY, divWidth, leftDivHeight)
     
-    -- Clipping adjusting
+    -- Definir a área de clipping (ajusta conforme a tela aumenta)
     love.graphics.setScissor(leftDivX, leftDivY, divWidth, leftDivHeight)
 
-    -- Use the scroll for defining the start & ending
+    -- Ajustar o início e fim da lista com base no scroll
     local filmStartIndex = math.floor(scrollY / filmHeight) + 1
     local filmEndIndex = math.min(filmStartIndex + visibleFilmCount - 1, #films)
 
-    -- Adicionando a verificação para evitar acessar um índice inválido
     for i = filmStartIndex, filmEndIndex do
         local film = films[i]
-        if film then  -- Certifica-se de que o film não é nil
+        if film then
             love.graphics.setColor(0, 0, 0)
-            drawTextWithShadow(film.nome, leftDivX + 10, leftDivY + (i - filmStartIndex) * filmHeight - (scrollY % filmHeight), divWidth - 30, "left")
+            love.graphics.printf(film.nome, leftDivX + 10, leftDivY + (i - filmStartIndex) * filmHeight - (scrollY % filmHeight), divWidth - 30, "left")
         end
     end
 
-    -- Removing clipping
+    -- Remover o scissor após desenhar
     love.graphics.setScissor()
 
-    -- Calculating the scroll area
+    -- Recalcular e desenhar a barra de rolagem
+    local scrollbarHeight = math.max((leftDivHeight / (#films * filmHeight)) * leftDivHeight, 20)
     local scrollbarX = leftDivX + divWidth + 10
-    local scrollbarHeight
-    local scrollbarY
+    local scrollbarY = leftDivY + (scrollY / (#films * filmHeight)) * leftDivHeight
 
     if #films <= visibleFilmCount then
         scrollbarHeight = leftDivHeight  -- Quando há poucos filmes
         scrollbarY = leftDivY  -- Sem necessidade de rolar
-    else
-        local scrollProportion = visibleFilmCount / #films
-        scrollbarHeight = math.max(scrollProportion * leftDivHeight, 20)
-        scrollbarY = leftDivY + (scrollY / (filmHeight * (#films - visibleFilmCount))) * leftDivHeight
-    end    
+    end
 
-    -- Drawing the scroll
     love.graphics.setColor(0.6, 0.6, 0.6)
     love.graphics.rectangle("fill", scrollbarX, scrollbarY, scrollbarWidth, scrollbarHeight)
 end
@@ -146,12 +144,6 @@ function drawAttributes(fields, inputFields, drawHalf)
             -- Espaçamento entre o texto e o campo
             local textX = attributesDivX + 10
             local fieldX = attributesDivX + 150
-
-            -- Tratar o campo "Dt lançamento" para quebrar corretamente
-            local displayText = field.display
-            if field.key == "dataLancamento" and string.len(displayText) > 6 then
-                displayText = string.sub(displayText, 1, 15) .. "..."
-            end
 
             -- Desenhar o texto com sombra
             drawTextWithShadow(displayText .. ": ", textX, attributesDivY + 50 + (i - 1) * 40, attributesDivWidth - 20, "left")
