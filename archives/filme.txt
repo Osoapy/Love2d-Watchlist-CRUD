@@ -1,5 +1,18 @@
-{["produtora"] = "Warner Bros.", ["receita"] = "1000000000", ["orcamento"] = "200000000", ["nome"] = "The Dark Knight", ["diretor"] = "Christopher Nolan", ["dataLancamento"] = "2008-07-18"}
-{["produtora"] = "Marvel Studios", ["receita"] = "2798000000", ["orcamento"] = "356000000", ["nome"] = "Avengers: Endgame", ["diretor"] = "Anthony Russo", ["dataLancamento"] = "2019-04-26"}
-{["produtora"] = "Paramount Pictures", ["receita"] = "709700000", ["orcamento"] = "190000000", ["nome"] = "Transformers", ["diretor"] = "Michael Bay", ["dataLancamento"] = "2007-07-03"}
-{["produtora"] = "Sony Pictures", ["receita"] = "585800000", ["orcamento"] = "160000000", ["nome"] = "Spider-Man: Homecoming", ["diretor"] = "Jon Watts", ["dataLancamento"] = "2017-07-07"}
-{["produtora"] = "Universal Pictures", ["receita"] = "1500000000", ["orcamento"] = "250000000", ["nome"] = "Jurassic World", ["diretor"] = "Colin Trevorrow", ["dataLancamento"] = "2015-06-12"}
+{["produtora"] = "Marvel Studios",["receita"] = "2.798.000.000",["nome"] = "Avengers: Endgame",["orcamento"] = "356.000.000",["diretor"] = "Anthony Russo",["dataLancamento"] = "2019-04-26"}
+{["dataLancamento"] = "2007-07-03",["produtora"] = "Paramount Pictures",["receita"] = "709.700.000",["orcamento"] = "190.000.000",["nome"] = "Transformers",["diretor"] = "Michael Bay"}
+{["produtora"] = "Sony Pictures",["receita"] = "585.800.000",["nome"] = "Spider-Man",["orcamento"] = "160.000.000",["diretor"] = "Jon Watts",["dataLancamento"] = "2017-07-07"}
+{["dataLancamento"] = "2015-06-12",["produtora"] = "Universal Pictures",["receita"] = "1.500.000.000",["orcamento"] = "250.000.000",["nome"] = "Jurassic World",["diretor"] = "Colin Trevorrow"}
+{["orcamento"] = "260.000.000", ["diretor"] = "James Cameron", ["dataLancamento"] = "2009-12-18", ["produtora"] = "20th Century Fox", ["nome"] = "Avatar", ["receita"] = "2.847.000.000"}
+{["produtora"] = "Walt Disney Pictures", ["receita"] = "1.657.000.000", ["nome"] = "The Lion King", ["orcamento"] = "260.000.000", ["diretor"] = "Jon Favreau", ["dataLancamento"] = "2019-07-19"}
+{["dataLancamento"] = "2018-04-27", ["produtora"] = "Marvel Studios", ["receita"] = "2.048.000.000", ["orcamento"] = "316.000.000", ["nome"] = "Avengers: Infinity War", ["diretor"] = "Anthony Russo"}
+{["produtora"] = "Warner Bros.", ["receita"] = "821.800.000", ["nome"] = "Aquaman", ["orcamento"] = "160.000.000", ["diretor"] = "James Wan", ["dataLancamento"] = "2018-12-21"}
+{["dataLancamento"] = "2014-11-07", ["produtora"] = "Paramount Pictures", ["receita"] = "677.500.000", ["orcamento"] = "165.000.000", ["nome"] = "Interstellar", ["diretor"] = "Christopher Nolan"}
+{["produtora"] = "Universal Pictures", ["receita"] = "1.159.000.000", ["nome"] = "Furious 7", ["orcamento"] = "190.000.000", ["diretor"] = "James Wan", ["dataLancamento"] = "2015-04-03"}
+{["dataLancamento"] = "2013-05-03", ["produtora"] = "Marvel Studios", ["receita"] = "1.215.000.000", ["orcamento"] = "200.000.000", ["nome"] = "Iron Man 3", ["diretor"] = "Shane Black"}
+{["orcamento"] = "170.000.000", ["diretor"] = "Sam Mendes", ["dataLancamento"] = "2012-11-09", ["produtora"] = "Eon Productions", ["nome"] = "Skyfall", ["receita"] = "1.108.000.000"}
+{["orcamento"] = "150.000.000",["diretor"] = "Chris Buck",["dataLancamento"] = "2019-11-22",["produtora"] = "Walt Disney Pictures",["nome"] = "Frozen I",["receita"] = "1.276.000.000"}
+{["dataLancamento"] = "",["produtora"] = "",["receita"] = "",["orcamento"] = "",["nome"] = "aaaaaa",["diretor"] = ""}
+{["dataLancamento"] = "",["produtora"] = "",["receita"] = "",["orcamento"] = "",["nome"] = "pppp",["diretor"] = ""}
+{["dataLancamento"] = "",["produtora"] = "",["receita"] = "",["orcamento"] = "",["nome"] = "pppp",["diretor"] = ""}
+{["dataLancamento"] = "",["produtora"] = "",["receita"] = "",["orcamento"] = "",["nome"] = "pppp",["diretor"] = ""}
+{["dataLancamento"] = "",["produtora"] = "",["receita"] = "",["orcamento"] = "",["nome"] = "pppp",["diretor"] = ""}

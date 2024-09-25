@@ -139,6 +139,9 @@ function drawAttributes(fields, inputFields, drawHalf)
 
     drawHalf = drawHalf or nil
 
+    local smallFont = love.graphics.newFont("fonts/zenKaku.ttf", 19.5)
+    love.graphics.setFont(smallFont)
+
     if not drawHalf then
         for i, field in ipairs(fields) do
             -- Espaçamento entre o texto e o campo
@@ -146,7 +149,7 @@ function drawAttributes(fields, inputFields, drawHalf)
             local fieldX = attributesDivX + 150
 
             -- Desenhar o texto com sombra
-            drawTextWithShadow(displayText .. ": ", textX, attributesDivY + 50 + (i - 1) * 40, attributesDivWidth - 20, "left")
+            drawTextWithShadow(field.display .. ": ", textX, attributesDivY + 60 + (i - 1) * 40, attributesDivWidth - 20, "left")
 
             -- Desenhar o campo preenchível
             love.graphics.setColor(1, 0.9, 0.76, 0.21)
@@ -158,6 +161,8 @@ function drawAttributes(fields, inputFields, drawHalf)
             love.graphics.printf(value, fieldX + 5, attributesDivY + 60 + (i - 1) * 40, attributesDivWidth - 170, "left")
         end
     end
+
+    love.graphics.setFont(myFont)
 end
 
 function drawButtons(selectedFilmIndex)
@@ -168,7 +173,7 @@ function drawButtons(selectedFilmIndex)
     local attributesDivWidth = screenWidth * 0.35
     local attributesDivHeight = screenHeight * 0.8
 
-    local buttonWidth, buttonHeight = attributesDivWidth * 0.4, 40
+    local buttonWidth, buttonHeight = attributesDivWidth * 0.4, attributesDivHeight * 0.1
     local buttonY = attributesDivY + attributesDivHeight - buttonHeight - 60  -- Centralizando verticalmente
     local saveButtonX, deleteButtonX = attributesDivX + 10, attributesDivX + attributesDivWidth - buttonWidth - 10
     local borderRadius = 5

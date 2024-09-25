@@ -42,9 +42,7 @@ local fields = {
     {display = "Status", key = "status"}
 }
 
-function menu.load(wasCalled)
-    wasCalled = wasCalled or nil
-
+function menu.load()
     -- Carregar a imagem do background
     background = love.graphics.newImage("assets/background.png")
     assert(background, "Erro ao carregar a imagem do background!")
@@ -67,20 +65,11 @@ function menu.load(wasCalled)
     -- Recebe todos os filmes a serem listados
     allSeries = returnAllObjects(serieFile)
     visibleFilmCount = math.floor(love.graphics.getHeight() * 0.5 / filmHeight)
+    selectedSerieIndex = nil
 
     -- Calcula a altura da barra de rolagem
     scrollbarHeight = math.max(visibleFilmCount / #allSeries * screenHeight * 0.5, 20)
     totalHeight = #allSeries * filmHeight
-
-    if wasCalled then
-        local selectedFilm = allSeries[wasCalled]
-        selectedSerieIndex = wasCalled
-
-        -- Preenche os campos de texto com os valores do filme selecionado
-        for _, field in ipairs(fields) do
-            inputFields[field.key] = selectedFilm[field.key] or ""
-        end
-    end
 end
 
 function updateButtonDimensions()
@@ -124,15 +113,15 @@ end
 function menu.mousepressed(x, y, button)
     if button == 1 then
         -- Verificar se o clique foi nos botões de salvar ou excluir
-        local screenWidth = love.graphics.getWidth()
+        local screenWidth, screenHeight = love.graphics.getWidth(), love.graphics.getHeight()
         local attributesDivWidth = screenWidth * 0.35
         local attributesDivHeight = love.graphics.getHeight() * 0.8
         local attributesDivX = screenWidth - attributesDivWidth - screenWidth * 0.05
         local attributesDivY = love.graphics.getHeight() * 0.1
 
         local buttonWidth = attributesDivWidth * 0.4
-        local buttonHeight = 40
-        local buttonY = attributesDivY + attributesDivHeight - buttonHeight - 20
+        local buttonHeight = attributesDivHeight * 0.1
+        local buttonY = attributesDivY + attributesDivHeight - buttonHeight - 60
         local saveButtonX = attributesDivX + 10
         local deleteButtonX = attributesDivX + attributesDivWidth - buttonWidth - 10
 
@@ -147,9 +136,9 @@ function menu.mousepressed(x, y, button)
 
         -- Verificar se o clique foi em algum campo de texto da div de atributos
         for i, field in ipairs(fields) do
-            local fieldX = attributesDivX + 120
-            local fieldY = attributesDivY + 30 + (i - 1) * 40
-            local fieldWidth = attributesDivWidth - 130
+            local fieldX = attributesDivX + 150
+            local fieldY = attributesDivY + 60 + (i - 1) * 40
+            local fieldWidth = attributesDivWidth - 160
             local fieldHeight = 30
             if x > fieldX and x < fieldX + fieldWidth and y > fieldY and y < fieldY + fieldHeight then
                 currentField = field.key
@@ -188,6 +177,13 @@ function menu.mousepressed(x, y, button)
                 -- Adiciona o filme ao arquivo
                 addInFile(serieFile, actualFilm.getSerialized())
 
+                -- Atualizar a lista de filmes
+                allSeries = returnAllObjects(serieFile)
+
+                -- Recalcular a altura da barra de rolagem
+                scrollbarHeight = math.max(visibleFilmCount / #allSeries * screenHeight * 0.5, 20)
+                totalHeight = #allSeries * filmHeight
+
                 -- Os campos continuam editáveis, então não limpar os campos após salvar
             end
 
@@ -208,6 +204,13 @@ function menu.mousepressed(x, y, button)
 
                 alterFile(serieFile, savingSerie, allSeries[clickedIndex].nome, "serie")
 
+                -- Atualizar a lista de filmes
+                allSeries = returnAllObjects(serieFile)
+
+                -- Recalcular a altura da barra de rolagem
+                scrollbarHeight = math.max(visibleFilmCount / #allSeries * screenHeight * 0.5, 20)
+                totalHeight = #allSeries * filmHeight
+
                 for _, field in ipairs(fields) do
                     inputFields[field.key] = ""
                 end
@@ -222,6 +225,13 @@ function menu.mousepressed(x, y, button)
                 for _, field in ipairs(fields) do
                     inputFields[field.key] = ""
                 end
+
+                -- Atualizar a lista de filmes
+                allSeries = returnAllObjects(serieFile)
+
+                -- Recalcular a altura da barra de rolagem
+                scrollbarHeight = math.max(visibleFilmCount / #allSeries * screenHeight * 0.5, 20)
+                totalHeight = #allSeries * filmHeight
 
                 selectedSerieIndex = nil
             end
